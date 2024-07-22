@@ -48,14 +48,90 @@ local add_schem = function(a, b, c, d, e, f, g, h, i, j, k)
 		replacements = h,
 		spawn_by = i,
 		num_spawn_by = j,
-		rotation = k
+		rotation = k or "random",
 	})
 end
 
 
 -- igloo
-add_schem("default:snowblock", 0.0005, {"glacier"}, 3, 50,
-	ethereal.igloo, ethereal.glacier, nil, "default:snowblock", 8, "random")
+--[[add_schem("default:snowblock", 0.0005, {"glacier"}, 3, 50,
+	ethereal.igloo, ethereal.glacier, nil, "default:snowblock", 8, "random")]]
+
+minetest.register_decoration({
+	name = "ethereal:small_sakura_tree",
+	deco_type = "schematic",
+	place_on = "ethereal:bamboo_dirt",
+	sidelen = 80,
+	fill_ratio = 0.00275,
+	biomes = {"sakura"},
+	y_min = 5,
+	y_max = 48,
+	schematic = path.."cherry_tree_1.mts",
+	flags = "place_center_x,place_center_z",
+	rotation = "random",
+})
+
+minetest.register_decoration({
+	name = "ethereal:large_sakura_tree",
+	deco_type = "schematic",
+	place_on = "ethereal:bamboo_dirt",
+	sidelen = 80,
+	fill_ratio = 0.000285,
+	biomes = {"sakura"},
+	y_min = 5,
+	y_max = 48,
+	schematic = path.."cherry_tree_2.mts",
+	flags = "place_center_x,place_center_z",
+	replacements = {
+		["cherry:cherry_tree"] = "ethereal:sakura_trunk",
+		["cherry:cherry_leaves"] = "ethereal:sakura_leaves",
+	},
+	rotation = "random",
+})
+
+local did_sakura = minetest.get_decoration_id('ethereal:large_sakura_tree')
+minetest.set_gen_notify('decoration',{ did_sakura })
+did_sakura = 'decoration#' .. did_sakura
+
+minetest.register_on_generated(function(minp, maxp)
+	if maxp.y > 4 then
+		--
+		-- Sakura Tree - fix light
+		--
+		local gennotify = minetest.get_mapgen_object('gennotify')
+		for _, pos in ipairs(gennotify[did_sakura] or {}) do
+			minetest.after(0.2,function() minetest.fix_light(pos:offset(-9, -1, -9), pos:offset(9, 20, 9)) end)
+		end
+	end
+end)
+
+minetest.register_abm({
+	label = "Sakura petals",
+	nodenames = {"ethereal:sakura_leaves"},
+	interval = 6,
+	chance = 25,
+	catch_up = false,
+	action = function(pos)
+		minetest.add_particlespawner({
+			amount = 1,
+			time = 1,
+			minpos = {x = pos.x, y = pos.y, z = pos.z},
+			maxpos = {x = pos.x, y = pos.y, z = pos.z},
+			minvel = {x = -0.75, y = -0.4, z = -0.75},
+			maxvel = {x = 0.75, y = -0.2, z = 0.75},
+			minacc = {x = -0.2, y = -0.4, z = -0.2},
+			maxacc = {x = 0.2, y = -0.1, z = 0.2},
+			minexptime = 8,
+			maxexptime = 10,
+			minsize = 1.5,
+			maxsize = 1.75,
+			texture = "cherry_leaves_particul.png",
+			collisiondetection = true,
+			collision_removal = true,
+			vertical = false,
+		})
+	end,
+})
 
 -- sakura tree
 add_schem({"ethereal:bamboo_dirt"}, 0.001, {"sakura"}, 7, 100,
@@ -63,16 +139,42 @@ add_schem({"ethereal:bamboo_dirt"}, 0.001, {"sakura"}, 7, 100,
 	"ethereal:bamboo_dirt", 6)
 
 -- redwood tree
-add_schem({"default:dirt_with_dry_grass"}, 0.0025, {"mesa"}, 1, 100,
+add_schem({"default:dirt_with_dry_grass"}, 0.000625, {"mesa"}, 6, 31000,
 	ethereal.redwood_tree, ethereal.mesa, nil,
 	"default:dirt_with_dry_grass", 8)
 
 -- banana tree
-add_schem({"ethereal:grove_dirt"}, 0.015, {"grove"}, 1, 100,
-	ethereal.bananatree, ethereal.grove)
+--[[add_schem({"ethereal:grove_dirt"}, 0.004, {"grove"}, 1, 100,
+	ethereal.bananatree, ethereal.grove)]]
+
+-- grove trees
+for i,tree in ipairs({
+	ethereal.bananatree,
+	ethereal.orangetree,
+	ethereal.lemontree,
+}) do
+	minetest.register_decoration({
+		deco_type = "schematic",
+		sidelen = 16,
+		place_on = {"ethereal:grove_dirt"},
+		noise_params = {
+			offset = -0.005,
+			scale = 0.01125,
+			spread = {x = 100, y = 20, z = 100},
+			seed = 8888 - i,
+			octaves = 1,
+			persistence = 0.75,
+			lacunarity = 0.9,
+		},
+		y_max = 31000,
+		y_min = 5,
+		biomes = {"grove"},
+		schematic = tree,
+	})
+end
 
 -- healing tree
-add_schem({"default:dirt_with_snow"}, 0.01, {"taiga"}, 120, 140,
+add_schem({"default:dirt_with_snow","default:ice","ethereal:crystal_grass"}, 0.01, {"taiga","frost","frost_floatland"}, 120, 140,
 	ethereal.yellowtree, ethereal.alpine, nil, "default:dirt_with_snow", 8)
 
 -- crystal frost tree
@@ -84,6 +186,9 @@ add_schem({"ethereal:crystal_dirt"}, 0.01, {"frost", "frost_floatland"}, 1, 1750
 add_schem("ethereal:mushroom_dirt", 0.02, {"mushroom"}, 1, 100,
 	ethereal.mushroomone, ethereal.mushroom, nil,
 	"ethereal:mushroom_dirt", 8)
+
+add_schem("default:dirt_with_grass", 0.00025, {"jumble"}, 1, 100,
+	ethereal.mushroomone, ethereal.mushroom)
 
 -- small lava crater
 add_schem("ethereal:fiery_dirt", 0.01, {"fiery"}, 1, 100,
@@ -99,24 +204,101 @@ add_schem("ethereal:fiery_dirt", 0.03, {"fiery"}, 1, 100,
 
 -- default jungle tree
 add_schem({"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"},
-	0.08, {"junglee"}, 1, 100, dpath .. "jungle_tree.mts", ethereal.junglee)
+	0.08, {"junglee"}, 1, 31000, dpath .. "jungle_tree.mts", ethereal.junglee)
+
+-- special silver sand terrain for grayness which must be placed before trees
+minetest.register_decoration({
+	name = node,
+	deco_type = "simple",
+	sidelen = 16,
+	place_on = {"ethereal:gray_dirt"},
+	noise_params = {
+		offset = -0.25,
+		scale = 3,
+		spread = {x = 100, y = 100, z = 100},
+		seed = 666,
+		octaves = 3,
+		persist = 0.6,
+		lacunarity = 1.2,
+	},
+	y_max = 31000,
+	y_min = 1,
+	biomes = {"grayness"},
+	decoration = "default:silver_sand",
+	place_offset_y = -1,
+	flags = "force_placement",
+})
 
 -- willow tree
-add_schem({"ethereal:gray_dirt"}, 0.02, {"grayness"}, 1, 100,
+add_schem({"ethereal:gray_dirt"}, 0.015, {"grayness"}, 1, 100,
 	ethereal.willow, ethereal.grayness, nil,
 	"ethereal:gray_dirt", 6)
 
+-- small pine tree for shore elevation
+add_schem({"ethereal:cold_dirt", "default:dirt_with_coniferous_litter"},
+	0.0025, {"coniferous_forest"}, 3, 9, ethereal.pinetree, ethereal.snowy)
+
+-- small pine tree for lower elevation
+add_schem({"ethereal:cold_dirt", "default:dirt_with_coniferous_litter"},
+	0.03, {"coniferous_forest"}, 10, 48, ethereal.pinetree, ethereal.snowy)
+
 -- default large pine tree for lower elevation
 add_schem({"ethereal:cold_dirt", "default:dirt_with_coniferous_litter"},
-	0.025, {"coniferous_forest"}, 10, 40, dpath .. "pine_tree.mts", ethereal.snowy)
+	0.01, {"coniferous_forest"}, 10, 48, dpath .. "pine_tree.mts", ethereal.snowy)
 
 -- small pine for higher elevation
-add_schem({"default:dirt_with_snow"}, 0.025, {"taiga"}, 40, 140,
+add_schem({"default:dirt_with_snow"}, 0.03, {"taiga"}, 48, 31000,
 	ethereal.pinetree, ethereal.alpine)
 
+-- default large pine for higher elevation
+add_schem({"default:dirt_with_snow"}, 0.01, {"taiga"}, 48, 31000,
+	dpath .. "pine_tree.mts", ethereal.alpine)
+
 -- default apple tree
-add_schem({"default:dirt_with_grass"}, 0.025, {"jumble", "deciduous_forest"}, 1, 100,
+add_schem({"default:dirt_with_grass"}, 0.025, {"jumble"}, 1, 100,
 	dpath .. "apple_tree.mts", ethereal.grassy)
+
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"default:dirt_with_grass"},
+	place_offset_y = 0,
+	sidelen = 16,
+	fill_ratio = 0.0175,
+	biomes = {"deciduous_forest"},
+	y_max = 31000,
+	y_min = 1,
+	schematic = path.."meadow_tree_1.mts",
+	flags = "place_center_x, place_center_z",
+	rotation = "random",
+})
+
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"default:dirt_with_grass"},
+	place_offset_y = 0,
+	sidelen = 16,
+	fill_ratio = 0.0025,
+	biomes = {"deciduous_forest"},
+	y_max = 31000,
+	y_min = 1,
+	schematic = path.."meadow_tree_2.mts",
+	flags = "place_center_x, place_center_z",
+	rotation = "random",
+})
+
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"default:dirt_with_grass"},
+	place_offset_y = 0,
+	sidelen = 16,
+	fill_ratio = 0.00275,
+	biomes = {"deciduous_forest"},
+	y_max = 31000,
+	y_min = 1,
+	schematic = dpath.."apple_tree.mts",
+	flags = "place_center_x, place_center_z",
+	rotation = "random",
+})
 
 -- big old tree
 add_schem({"default:dirt_with_grass"}, 0.001, {"jumble"}, 1, 100,
@@ -124,11 +306,11 @@ add_schem({"default:dirt_with_grass"}, 0.001, {"jumble"}, 1, 100,
 	"default:dirt_with_grass", 8)
 
 -- default aspen tree
-add_schem({"default:dirt_with_grass"}, 0.02, {"grassytwo"}, 1, 50,
+add_schem({"default:dirt_with_grass"}, 0.0025, {"grassytwo"}, 1, 50,
 	dpath .. "aspen_tree.mts", ethereal.jumble)
 
 -- birch tree
-add_schem({"default:dirt_with_grass"}, 0.02, {"grassytwo"}, 50, 100,
+add_schem({"default:dirt_with_grass"}, 0.0025, {"grassytwo"}, 50, 100,
 	ethereal.birchtree, ethereal.grassytwo)
 
 -- orange tree
@@ -136,25 +318,25 @@ add_schem({"ethereal:prairie_dirt"}, 0.01, {"prairie"}, 1, 100,
 	ethereal.orangetree, ethereal.prairie)
 
 -- default acacia tree
-add_schem({"default:dry_dirt_with_dry_grass",
+--[[add_schem({"default:dry_dirt_with_dry_grass",
 	"default:dirt_with_dry_grass"}, 0.004, {"savanna"}, 1, 100,
-	dpath .. "acacia_tree.mts", ethereal.savanna)
+	dpath .. "acacia_tree.mts", ethereal.savanna)]]
 
 -- palm tree
 add_schem("default:sand", 0.0025, {"desert_ocean", "plains_ocean", "sandclay",
 	"sandstone_ocean", "mesa_ocean", "grove_ocean", "deciduous_forest_ocean"}, 1, 1,
-	ethereal.palmtree, 1)
+	ethereal.palmtree, 0)
 
 -- bamboo tree
-add_schem({"ethereal:bamboo_dirt"}, 0.025, {"bamboo"}, 1, 100,
-	ethereal.bambootree, ethereal.bamboo)
+add_schem({"ethereal:bamboo_dirt"}, 0.0025, {"sakura"}, 1, 100,
+	ethereal.bambootree, ethereal.sakura)
 
 -- bush
 add_schem({"ethereal:bamboo_dirt"}, 0.08, {"bamboo"}, 1, 100, ethereal.bush,
 	ethereal.bamboo)
 
 -- vine tree
-add_schem({"default:dirt_with_grass"}, 0.02, {"swamp"}, 1, 100,
+add_schem({"default:dirt_with_grass"}, 0.0175, {"swamp"}, 1, 31000,
 	ethereal.vinetree, ethereal.swamp)
 
 -- lemon tree
@@ -175,7 +357,7 @@ if ethereal.desert == 1 then
 		sidelen = 80,
 		noise_params = {
 			offset = -0.0005,
-			scale = 0.0015,
+			scale = 0.001,
 			spread = {x = 200, y = 200, z = 200},
 			seed = 230,
 			octaves = 3,
@@ -208,7 +390,31 @@ minetest.register_decoration({
 	y_min = 1,
 	y_max = 31000,
 	schematic = dpath .. "bush.mts",
-	flags = "place_center_x, place_center_z"
+	flags = "place_center_x, place_center_z",
+	rotation = "random"
+})
+
+
+-- default tropical bush
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"ethereal:grove_dirt", "default:dirt_with_rainforest_litter"},
+	replacements = {["default:bush_leaves"] = "default:jungleleaves"},
+	--sidelen = 16,
+	noise_params = {
+		offset = 0,
+		scale = 0.01,
+		spread = {x = 100, y = 100, z = 100},
+		seed = 137,
+		octaves = 3,
+		persist = 0.5
+	},
+	biomes = {"grove", "junglee"},
+	y_min = 1,
+	y_max = 31000,
+	schematic = dpath .. "bush.mts",
+	flags = "place_center_x, place_center_z",
+	rotation = "random"
 })
 
 
@@ -216,21 +422,26 @@ minetest.register_decoration({
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {
-		"default:dirt_with_dry_grass", "default:dry_dirt_with_dry_grass"},
+		"default:dirt_with_dry_grass",
+		"default:dry_dirt_with_dry_grass",
+		"naturalbiomes:savannalitter"
+	},
 	sidelen = 16,
 	noise_params = {
-		offset = -0.004,
-		scale = 0.01,
-		spread = {x = 100, y = 100, z = 100},
+		offset = -0.00525,
+		scale = 0.0125,
+		spread = {x = 7, y = 7, z = 7},
 		seed = 90155,
-		octaves = 3,
-		persist = 0.7,
+		octaves = 2,
+		persist = 0.8,
+		lacunarity = 1.5,
 	},
-	biomes = {"savanna", "mesa"},
+	biomes = {"mesa","savanna"},
 	y_min = 1,
 	y_max = 31000,
 	schematic = dpath .. "acacia_bush.mts",
-	flags = "place_center_x, place_center_z"
+	flags = "place_center_x, place_center_z",
+	rotation = "random"
 })
 
 
@@ -266,27 +477,39 @@ if minetest.registered_nodes["default:blueberry_bush_leaves"] then
 		name = "default:blueberry_bush",
 		deco_type = "schematic",
 		place_on = {
-			"default:dirt_with_coniferous_litter", "default:dirt_with_snow"},
+			"default:dirt_with_coniferous_litter", "default:dirt_with_snow", "ethereal:grove_dirt"},
 		sidelen = 16,
-		noise_params = {
-			offset = -0.004,
-			scale = 0.01,
-			spread = {x = 100, y = 100, z = 100},
-			seed = 697,
-			octaves = 3,
-			persist = 0.7,
-		},
-		biomes = {"coniferous_forest", "taiga"},
+		fill_ratio = 0.00075,
+		biomes = {"coniferous_forest", "taiga", "grove"},
 		y_max = 31000,
 		y_min = 1,
 		place_offset_y = 1,
 		schematic = dpath .. "blueberry_bush.mts",
-		flags = "place_center_x, place_center_z"
+		flags = "place_center_x, place_center_z",
+		rotation = "random"
 	})
 end
 
 
 -- place waterlily in beach areas
+local sandy_biomes = {}
+local desert_biomes = {
+	desert = true,
+	sandstone = true,
+	desert_shore = true,
+	sandstone_shore = true,
+	desert_below = true,
+	sandstone_below = true,
+}
+for biome,def in pairs(asuna.biomes) do
+	if def.shore == "default:sand" and
+		(def.ocean == "temperate" or def.ocean == "tropical") and
+		not desert_biomes[biome]
+	then
+		table.insert(sandy_biomes,biome)
+	end
+end
+
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"default:sand"},
@@ -299,8 +522,7 @@ minetest.register_decoration({
 		octaves = 3,
 		persist = 0.7
 	},
-	biomes = {"desert_ocean", "plains_ocean", "sandclay",
-		"mesa_ocean", "grove_ocean", "deciduous_forest_ocean", "swamp_ocean"},
+	biomes = sandy_biomes,
 	y_min = 0,
 	y_max = 0,
 	schematic = ethereal.waterlily,
@@ -316,7 +538,7 @@ if ethereal.reefs == 1 then
 	minetest.override_item("default:coral_orange", {groups = {crumbly = 3}})
 	minetest.override_item("default:coral_brown", {groups = {crumbly = 3}})
 
-	minetest.register_decoration({
+	--[[minetest.register_decoration({
 		deco_type = "schematic",
 		place_on = {"default:sand"},
 		noise_params = {
@@ -333,7 +555,7 @@ if ethereal.reefs == 1 then
 		schematic = path .. "corals.mts",
 		flags = "place_center_x, place_center_z",
 		rotation = "random"
-	})
+	})]]
 end
 
 

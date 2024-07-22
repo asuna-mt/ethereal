@@ -532,7 +532,6 @@ if minetest.registered_nodes["default:dirt_with_rainforest_litter"] then
 			"default:apple", "default:leaves",
 			"ethereal:orange", "ethereal:orange_leaves",
 			"ethereal:lemon", "ethereal:lemon_leaves",
-			"ethereal:vine"
 		},
 		radius = 3
 	})
@@ -603,3 +602,75 @@ if minetest.registered_nodes["default:dirt_with_rainforest_litter"] then
 		radius = 3
 	})
 end
+
+-- Special vine decay
+local vo = vector.offset
+local vinedir = {
+	[2] = function(v)
+		return vo(v,1,0,0)
+	end,
+	[3] = function(v)
+		return vo(v,-1,0,0)
+	end,
+	[4] = function(v)
+		return vo(v,0,0,1)
+	end,
+	[5] = function(v)
+		return vo(v,0,0,-1)
+	end,
+}
+
+minetest.register_abm({
+	label = "Ethereal vine decay",
+	nodenames = "ethereal:vine",
+	interval = 3,
+	chance = 2,
+	catch_up = false,
+	action = function(pos,node)
+		-- Only process if the vine is under a node that isn't another vine; vines
+		-- below vines are allowed to hang in the air
+		pos = vo(pos,0,1,0)
+		if minetest.get_node(pos).name ~= "ethereal:vine" then
+			local param2 = node.param2
+			local behindpos = vinedir[param2]
+
+			-- Do nothing if the vine is on the floor or ceiling
+			if not behindpos then
+				return
+			end
+
+			-- Process entire length of vine
+			behindpos = behindpos(pos)
+			local behind = nil
+			while true do
+				pos = vo(pos,0,-1,0)
+				behindpos = vo(behindpos,0,-1,0)
+				node = minetest.get_node(pos)
+
+				-- Remove the vine if it's part of a vine that's suspended in the air
+				if node.name == "ethereal:vine" and node.param2 == param2 and minetest.get_node(behindpos).name == "air" then
+					minetest.remove_node(pos)
+					minetest.check_for_falling(pos)
+					minetest.add_particlespawner({
+						amount = 8,
+						time = 0.001,
+						minpos = vector.subtract(pos, {x=0.5, y=0.5, z=0.5}),
+						maxpos = vector.add(pos, {x=0.5, y=0.5, z=0.5}),
+						minvel = vector.new(-0.5, -1, -0.5),
+						maxvel = vector.new(0.5, 0, 0.5),
+						minacc = vector.new(0, -9.81, 0),
+						maxacc = vector.new(0, -9.81, 0),
+						minsize = 0,
+						maxsize = 0,
+						node = { name = "ethereal:vine" },
+					})
+				else
+					-- We've reached something that isn't a vine, a vine facing in a
+					-- different direction, or a vine that is actually attached to
+					-- something, so stop processing
+					break
+				end
+			end
+		end
+	end,
+})

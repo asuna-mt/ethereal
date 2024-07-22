@@ -7,7 +7,7 @@ local e = {name = "ethereal:lemon", param1 = 100}
 
 ethereal.lemontree = {
 
-	size = {x = 5, y = 8, z = 5},
+	size = {x = 5, y = 9, z = 5},
 
 	yslice_prob = {
 		{ypos = 0, prob = 127},
@@ -16,6 +16,7 @@ ethereal.lemontree = {
 
 	data = {
 
+	_,_,_,_,_,
 	_,_,_,_,_,
 	_,_,_,_,_,
 	_,_,_,_,_,
@@ -28,12 +29,14 @@ ethereal.lemontree = {
 	_,_,_,_,_,
 	_,_,_,_,_,
 	_,_,_,_,_,
+	_,_,_,_,_,
 	_,L,L,l,_,
 	l,L,l,L,L,
 	L,l,L,L,L,
 	L,L,L,l,L,
 	_,L,L,L,_,
 
+	_,_,T,_,_,
 	_,_,T,_,_,
 	_,_,T,_,_,
 	_,_,T,_,_,
@@ -46,12 +49,14 @@ ethereal.lemontree = {
 	_,_,_,_,_,
 	_,_,_,_,_,
 	_,_,_,_,_,
+	_,_,_,_,_,
 	_,L,L,L,_,
 	L,l,L,L,L,
 	L,L,L,L,L,
 	L,L,L,L,l,
 	_,l,L,L,_,
 
+	_,_,_,_,_,
 	_,_,_,_,_,
 	_,_,_,_,_,
 	_,_,_,_,_,

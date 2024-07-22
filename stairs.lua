@@ -156,7 +156,7 @@ do_stair(
 	default.node_sound_wood_defaults())
 
 do_stair(
-	"Willow Wood",
+	"Weeping Willow Wood",
 	"willow_wood",
 	"ethereal:willow_wood",
 	{choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},

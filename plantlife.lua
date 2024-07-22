@@ -113,7 +113,7 @@ minetest.register_node("ethereal:vine", {
 	},
 	groups = {choppy = 3, oddly_breakable_by_hand = 1, flammable = 2},
 	legacy_wallmounted = true,
-	sounds = default.node_sound_leaves_defaults()
+	sounds = default.node_sound_leaves_defaults(),
 })
 
 minetest.register_craft({
@@ -158,32 +158,45 @@ minetest.register_craft({
 
 
 -- Fern (boston)
-minetest.register_node("ethereal:fern", {
-	description = S("Fern"),
-	drawtype = "plantlike",
-	visual_scale = 1.4,
-	tiles = {"ethereal_fern.png"},
-	inventory_image = "ethereal_fern.png",
-	wield_image = "ethereal_fern.png",
-	paramtype = "light",
-	sunlight_propagates = true,
-	waving = 1,
-	walkable = false,
-	buildable_to = true,
-	drop = {
-		max_items = 1,
-		items = {
-			{items = {"ethereal:fern_tubers"}, rarity = 6},
-			{items = {"ethereal:fern"}}
+if minetest.get_modpath("default") then
+	minetest.register_alias("ethereal:fern","default:fern_3")
+	minetest.override_item("default:fern_3",{
+		drop = {
+			max_items = 1,
+			items = {
+				{items = {"ethereal:fern_tubers"}, rarity = 6},
+				{items = {"default:fern_1"}},
+			},
+		},
+	})
+else
+	minetest.register_node("ethereal:fern", {
+		description = S("Fern"),
+		drawtype = "plantlike",
+		visual_scale = 1.4,
+		tiles = {"ethereal_fern.png"},
+		inventory_image = "ethereal_fern.png",
+		wield_image = "ethereal_fern.png",
+		paramtype = "light",
+		sunlight_propagates = true,
+		waving = 1,
+		walkable = false,
+		buildable_to = true,
+		drop = {
+			max_items = 1,
+			items = {
+				{items = {"ethereal:fern_tubers"}, rarity = 6},
+				{items = {"ethereal:fern"}}
+			}
+		},
+		groups = {snappy = 3, flora = 1, attached_node = 1, flammable = 2},
+		sounds = default.node_sound_leaves_defaults(),
+		selection_box = {
+			type = "fixed",
+			fixed = {-5 / 16, -0.5, -5 / 16, 5 / 16, 0.67, 5 / 16}
 		}
-	},
-	groups = {snappy = 3, flora = 1, attached_node = 1, flammable = 2},
-	sounds = default.node_sound_leaves_defaults(),
-	selection_box = {
-		type = "fixed",
-		fixed = {-5 / 16, -0.5, -5 / 16, 5 / 16, 0.67, 5 / 16}
-	}
-})
+	})
+end
 
 -- Boston Ferns sometimes drop edible Tubers (heals 1/2 heart when eaten)
 minetest.register_craftitem("ethereal:fern_tubers", {
@@ -192,7 +205,6 @@ minetest.register_craftitem("ethereal:fern_tubers", {
 	groups = {food_tuber = 1, flammable = 2},
 	on_use = minetest.item_eat(1)
 })
-
 
 -- Red Shrub (not flammable)
 minetest.register_node("ethereal:dry_shrub", {

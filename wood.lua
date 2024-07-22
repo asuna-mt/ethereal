@@ -50,7 +50,7 @@ minetest.register_craft({
 
 -- willow trunk
 minetest.register_node("ethereal:willow_trunk", {
-	description = S("Willow Trunk"),
+	description = S("Weeping Willow Trunk"),
 	tiles = {
 		"ethereal_willow_trunk_top.png",
 		"ethereal_willow_trunk_top.png",
@@ -64,7 +64,7 @@ minetest.register_node("ethereal:willow_trunk", {
 
 -- willow wood
 minetest.register_node("ethereal:willow_wood", {
-	description = S("Willow Wood"),
+	description = S("Weeping Willow Wood"),
 	tiles = {"ethereal_willow_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
