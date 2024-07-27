@@ -134,10 +134,10 @@ add_node({"default:dry_dirt"}, 0.005, {"plains"}, 4, 100,
 --[[add_node({"default:sand"}, 0.015, {"deciduous_forest_ocean"}, 1, 100,
 	{"default:dry_shrub"}, nil, nil, nil, ethereal.grassy)]]
 
-add_node({"default:desert_sand"}, 0.005, {"desert"}, 1, 100,
+add_node({"default:desert_sand"}, 0.0025, {"desert"}, 1, 100,
 	{"default:dry_shrub"}, nil, nil, nil, ethereal.desert)
 
-add_node({"default:sandstone"}, 0.005, {"sandstone"}, 1, 100,
+add_node({"default:sandstone"}, 0.0025, {"sandstone"}, 1, 100,
 	{"default:dry_shrub"}, nil, nil, nil, ethereal.sandstone)
 
 	-- Special orange baked clay surface decor for mesa
@@ -232,7 +232,7 @@ minetest.register_decoration({
 	},
 	noise_params = {
 		offset = -0.0069,
-		scale = 0.027525,
+		scale = 0.0175,
 		spread = {x = 8, y = 8, z = 8},
 		seed = 60659,
 		octaves = 2,

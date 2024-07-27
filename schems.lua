@@ -174,8 +174,31 @@ for i,tree in ipairs({
 end
 
 -- healing tree
-add_schem({"default:dirt_with_snow","default:ice","ethereal:crystal_grass"}, 0.01, {"taiga","frost","frost_floatland"}, 120, 140,
-	ethereal.yellowtree, ethereal.alpine, nil, "default:dirt_with_snow", 8)
+--[[add_schem({"default:dirt_with_snow","default:ice","ethereal:crystal_grass"}, 0.01, {"taiga","frost","frost_floatland"}, 120, 140,
+	ethereal.yellowtree, ethereal.alpine, nil, "default:dirt_with_snow", 8)]]
+
+minetest.register_decoration({
+	deco_type = "schematic",
+	sidelen = 16,
+	place_on = {"group:soil"},
+	noise_params = {
+		offset = -0.005,
+		scale = 0.00875,
+		spread = {x = 100, y = 20, z = 100},
+		seed = 76,
+		octaves = 1,
+		persistence = 0.75,
+		lacunarity = 0.9,
+	},
+	y_max = 31000,
+	y_min = 48,
+	biomes = {
+		"frost",
+		"taiga",
+	},
+	schematic = ethereal.yellowtree,
+	flags = "place_center_x,place_center_z",
+})
 
 -- crystal frost tree
 add_schem({"ethereal:crystal_dirt"}, 0.01, {"frost", "frost_floatland"}, 1, 1750,
@@ -353,17 +376,23 @@ if ethereal.desert == 1 then
 
 	minetest.register_decoration({
 		deco_type = "schematic",
-		place_on = {"default:desert_sand"},
+		place_on = {
+			"default:desert_sand",
+			"default:sand",
+		},
 		sidelen = 80,
 		noise_params = {
-			offset = -0.0005,
-			scale = 0.001,
-			spread = {x = 200, y = 200, z = 200},
+			offset = -0.0001,
+			scale = 0.0005,
+			spread = {x = 100, y = 100, z = 100},
 			seed = 230,
-			octaves = 3,
+			octaves = 1,
 			persist = 0.6
 		},
-		biomes = {"desert"},
+		biomes = {
+			"desert",
+			"sandstone",
+		},
 		y_min = 5,
 		y_max = 31000,
 		schematic = dpath .. "large_cactus.mts",
