@@ -401,6 +401,7 @@ local onion_rate = abundant and 0.025 or 0.005
 minetest.register_decoration(asuna.features.crops.onion.inject_decoration({
 	deco_type = "simple",
 	sidelen = 8,
+	place_on = {"group:soil"},
 	noise_params = {
 			offset = -0.4125,
 			scale = 0.3575,
