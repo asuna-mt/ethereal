@@ -30,7 +30,7 @@ dofile(path .. "basandra_bush.lua")
 
 
 -- helper function
-local add_schem = function(a, b, c, d, e, f, g, h, i, j, k)
+local add_schem = function(a, b, c, d, e, f, g, h, i, j, k, l)
 
 	-- if not 1 then biome disabled, don't add
 	if g ~= 1 then return end
@@ -49,9 +49,30 @@ local add_schem = function(a, b, c, d, e, f, g, h, i, j, k)
 		spawn_by = i,
 		num_spawn_by = j,
 		rotation = k or "random",
+		place_offset_y = l,
 	})
 end
 
+-- Special grass in jumble biome which must be place before schematics
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"default:dirt_with_rainforest_litter"},
+	sidelen = 8,
+	noise_params = {
+		offset = -0.3125,
+		scale = -1.25,
+		spread = {x = 150, y = 100, z = 150},
+		seed = 330,
+		octaves = 3,
+		persist = 0.95
+	},
+	biomes = {"jumble"},
+	y_max = 31000,
+	y_min = 1,
+	decoration = "default:dirt_with_grass",
+	place_offset_y = -1,
+	flags = "force_placement"
+})
 
 -- igloo
 --[[add_schem("default:snowblock", 0.0005, {"glacier"}, 3, 50,
@@ -65,7 +86,7 @@ minetest.register_decoration({
 	fill_ratio = 0.00275,
 	biomes = {"sakura"},
 	y_min = 5,
-	y_max = 48,
+	y_max = 31000,
 	schematic = path.."cherry_tree_1.mts",
 	flags = "place_center_x,place_center_z",
 	rotation = "random",
@@ -79,7 +100,7 @@ minetest.register_decoration({
 	fill_ratio = 0.000285,
 	biomes = {"sakura"},
 	y_min = 5,
-	y_max = 48,
+	y_max = 31000,
 	schematic = path.."cherry_tree_2.mts",
 	flags = "place_center_x,place_center_z",
 	replacements = {
@@ -134,7 +155,7 @@ minetest.register_abm({
 })
 
 -- sakura tree
-add_schem({"ethereal:bamboo_dirt"}, 0.001, {"sakura"}, 7, 100,
+add_schem({"ethereal:bamboo_dirt"}, 0.001, {"sakura"}, 7, 31000,
 	ethereal.sakura_tree, ethereal.sakura, nil,
 	"ethereal:bamboo_dirt", 6)
 
@@ -206,12 +227,13 @@ add_schem({"ethereal:crystal_dirt"}, 0.01, {"frost", "frost_floatland"}, 1, 1750
 	"ethereal:crystal_dirt", 8)
 
 -- giant mushroom
-add_schem("ethereal:mushroom_dirt", 0.02, {"mushroom"}, 1, 100,
+add_schem("ethereal:mushroom_dirt", 0.02, {"mushroom"}, 1, 31000,
 	ethereal.mushroomone, ethereal.mushroom, nil,
 	"ethereal:mushroom_dirt", 8)
 
-add_schem("default:dirt_with_grass", 0.00025, {"jumble"}, 1, 100,
-	ethereal.mushroomone, ethereal.mushroom)
+add_schem({"default:dirt_with_rainforest_litter"}, 0.000525, {"jumble"}, 1, 31000,
+	ethereal.mushroomone, ethereal.jumble, nil,
+	"default:dirt_with_rainforest_litter", 8)
 
 -- small lava crater
 add_schem("ethereal:fiery_dirt", 0.01, {"fiery"}, 1, 100,
@@ -253,7 +275,7 @@ minetest.register_decoration({
 })
 
 -- willow tree
-add_schem({"ethereal:gray_dirt"}, 0.015, {"grayness"}, 1, 100,
+add_schem({"ethereal:gray_dirt"}, 0.015, {"grayness"}, 1, 31000,
 	ethereal.willow, ethereal.grayness, nil,
 	"ethereal:gray_dirt", 6)
 
@@ -278,9 +300,24 @@ add_schem({"default:dirt_with_snow"}, 0.01, {"taiga"}, 48, 31000,
 	dpath .. "pine_tree.mts", ethereal.alpine)
 
 -- default apple tree
-add_schem({"default:dirt_with_grass"}, 0.025, {"jumble"}, 1, 100,
-	dpath .. "apple_tree.mts", ethereal.grassy)
+add_schem({"default:dirt_with_rainforest_litter"}, 0.001, {"jumble"}, 1, 31000,
+	dpath .. "apple_tree.mts", ethereal.grassy, nil,
+	"default:dirt_with_rainforest_litter", 6)
 
+-- gaunt trees
+add_schem({"default:dirt_with_grass"}, 0.000275, {"jumble"}, 1, 31000,
+	path.."gaunt_tree_1.mts", ethereal.jumble, nil,
+	{"default:dirt_with_grass"}, 5, nil, 1)
+
+add_schem({"default:dirt_with_grass"}, 0.0005, {"jumble"}, 1, 31000,
+	path.."gaunt_tree_2.mts", ethereal.jumble, nil,
+	{"default:dirt_with_grass"}, 5, nil, 1)
+
+add_schem({"default:dirt_with_grass"}, 0.0005, {"jumble"}, 1, 31000,
+	path.."gaunt_tree_3.mts", ethereal.jumble, nil,
+	{"default:dirt_with_grass"}, 5, nil, 1)
+
+-- deciduous forest trees
 minetest.register_decoration({
 	deco_type = "schematic",
 	place_on = {"default:dirt_with_grass"},
@@ -324,16 +361,20 @@ minetest.register_decoration({
 })
 
 -- big old tree
-add_schem({"default:dirt_with_grass"}, 0.001, {"jumble"}, 1, 100,
+add_schem({"default:dirt_with_grass","default:dirt_with_rainforest_litter"}, 0.00225, {"jumble"}, 1, 31000,
+	path.."overgrown_tree.mts", ethereal.jumble, nil,
+	"default:dirt_with_rainforest_litter", 6, nil, 1)
+
+add_schem({"default:dirt_with_grass","default:dirt_with_rainforest_litter"}, 0.00275, {"jumble"}, 1, 31000,
 	ethereal.bigtree, ethereal.jumble, nil,
-	"default:dirt_with_grass", 8)
+	"default:dirt_with_rainforest_litter", 6, nil, 1)
 
 -- default aspen tree
 add_schem({"default:dirt_with_grass"}, 0.0025, {"grassytwo"}, 1, 50,
-	dpath .. "aspen_tree.mts", ethereal.jumble)
+	dpath .. "aspen_tree.mts", ethereal.grassy)
 
 -- birch tree
-add_schem({"default:dirt_with_grass"}, 0.0025, {"grassytwo"}, 50, 100,
+add_schem({"default:dirt_with_grass"}, 0.0025, {"grassytwo"}, 51, 31000,
 	ethereal.birchtree, ethereal.grassytwo)
 
 -- orange tree
@@ -351,7 +392,7 @@ add_schem("default:sand", 0.0025, {"desert_ocean", "plains_ocean", "sandclay",
 	ethereal.palmtree, 0)
 
 -- bamboo tree
-add_schem({"ethereal:bamboo_dirt"}, 0.0025, {"sakura"}, 1, 100,
+add_schem({"ethereal:bamboo_dirt"}, 0.0025, {"sakura"}, 1, 31000,
 	ethereal.bambootree, ethereal.sakura)
 
 -- bush
@@ -415,7 +456,7 @@ minetest.register_decoration({
 		octaves = 3,
 		persist = 0.7,
 	},
-	biomes = {"deciduous_forest", "grassytwo", "jumble"},
+	biomes = {"deciduous_forest", "grassytwo"},
 	y_min = 1,
 	y_max = 31000,
 	schematic = dpath .. "bush.mts",
@@ -423,6 +464,28 @@ minetest.register_decoration({
 	rotation = "random"
 })
 
+-- extra bushes for jumble biome
+minetest.register_decoration({
+	deco_type = "schematic",
+	place_on = {"default:dirt_with_rainforest_litter"},
+	spawn_by = "default:dirt_with_rainforest_litter",
+	num_spawn_by = 3,
+	sidelen = 16,
+	noise_params = {
+		offset = 0.0125,
+		scale = 0.01,
+		spread = {x = 100, y = 100, z = 100},
+		seed = 34343,
+		octaves = 2,
+		persist = 0.6,
+	},
+	biomes = {"jumble"},
+	y_min = 1,
+	y_max = 31000,
+	schematic = dpath .. "bush.mts",
+	flags = "place_center_x, place_center_z",
+	rotation = "random"
+})
 
 -- default tropical bush
 minetest.register_decoration({

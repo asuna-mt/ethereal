@@ -70,15 +70,15 @@ if minetest.registered_nodes["default:dry_dirt_with_dry_grass"] then
 	})
 end
 
--- Rainforest dirt in grove biome
 if minetest.registered_nodes["default:dirt_with_rainforest_litter"] then
 
+	-- Rainforest dirt in grove biome
 	minetest.register_decoration({
 		deco_type = "simple",
 		place_on = {"ethereal:grove_dirt"},
 		sidelen = 4,
 		noise_params = {
-			offset = -0.005,
+			offset = -0.0025,
 			scale = 0.5,
 			spread = {x = 100, y = 100, z = 100},
 			seed = 329,
@@ -128,8 +128,11 @@ add_node({"ethereal:fiery_dirt"}, 0.000275, {"fiery"}, 4, 100,
 	{"ethereal:scorched_tree"}, 6, nil, nil, ethereal.fiery)
 
 -- dry shrub
-add_node({"default:dry_dirt"}, 0.005, {"plains"}, 4, 100,
+add_node({"default:dry_dirt"}, 0.005, {"plains"}, 4, 31000,
 	{"default:dry_shrub"}, nil, nil, nil, ethereal.plains)
+
+add_node({"default:dirt_with_grass"}, 0.00325, {"jumble"}, 4, 31000,
+	{"default:dry_shrub"}, nil, nil, nil, ethereal.jumble)
 
 --[[add_node({"default:sand"}, 0.015, {"deciduous_forest_ocean"}, 1, 100,
 	{"default:dry_shrub"}, nil, nil, nil, ethereal.grassy)]]
@@ -166,7 +169,7 @@ add_node({"bakedclay:red", "bakedclay:orange"}, 0.015, {"mesa"}, 1, 100,
 
 -- dry grass
 add_node({"default:dry_dirt_with_dry_grass",
-	"default:dirt_with_dry_grass"}, 0.875, {"plains"}, 1, 100,
+	"default:dirt_with_dry_grass"}, 0.875, {"plains"}, 1, 31000,
 	{"default:dry_grass_2", "default:dry_grass_3", "default:dry_grass_4",
 	"default:dry_grass_5","default:grass_1"}, nil, nil, nil, ethereal.plains)
 
@@ -209,7 +212,7 @@ add_node({"ethereal:fiery_dirt"}, 0.10, {"fiery"}, 1, 100,
 	{"ethereal:dry_shrub"}, nil, nil, nil, ethereal.fiery)
 
 -- snowy grass
-add_node({"ethereal:gray_dirt"}, 0.175, {"grayness"}, 1, 100,
+add_node({"ethereal:gray_dirt"}, 0.175, {"grayness"}, 1, 31000,
 	{"ethereal:snowygrass"}, nil, nil, nil, ethereal.grayness)
 
 add_node({"ethereal:cold_dirt", "default:dirt_with_coniferous_litter"}, 0.05,
@@ -250,11 +253,14 @@ minetest.register_decoration({
 })
 
 -- wild red mushroom
-add_node({"ethereal:mushroom_dirt"}, 0.25, {"mushroom"}, 1, 100,
+add_node({"ethereal:mushroom_dirt"}, 0.25, {"mushroom"}, 1, 31000,
 	{"flowers:mushroom_red"}, nil, nil, nil, ethereal.mushroom)
 
+add_node({"default:dirt_with_rainforest_litter"}, 0.0075, {"jumble"}, 1, 31000,
+	{"flowers:mushroom_red"}, nil, nil, nil, ethereal.jumble)
+
 -- spore grass
-add_node({"ethereal:mushroom_dirt"}, 0.175, {"mushroom"}, 1, 100,
+add_node({"ethereal:mushroom_dirt"}, 0.175, {"mushroom"}, 1, 31000,
 	{"ethereal:spore_grass"}, nil, nil, nil, ethereal.mushroom)
 
 
@@ -287,18 +293,22 @@ for _, row in pairs(list) do
 			},
 			biomes = {row[1]},
 			y_min = 1,
-			y_max = 120,
+			y_max = 31000,
 			decoration = {"flowers:mushroom_brown", "flowers:mushroom_red"}
 		})
 	end
 end
+
+-- stumps
+add_node({"default:dirt_with_grass"}, 0.00175, {"jumble"}, 4, 31000,
+	{"default:tree"}, 4, nil, nil, ethereal.jumble)
 
 -- jungle grass
 add_node({"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"},
 	0.10, {"junglee"}, 1, 100, {"default:junglegrass"}, nil, nil, nil,
 	ethereal.junglee)
 
-	add_node({"default:dirt_with_grass","ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.1, {"jumble","grove"}, 1, 100,
+add_node({"ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.1, {"jumble","grove"}, 1, 31000,
 	{"default:junglegrass"}, nil, nil, nil, ethereal.jumble)
 
 add_node({"default:dirt_with_grass"}, 0.25, {"swamp","marsh"}, 1, 31000,
@@ -309,11 +319,11 @@ add_node({"default:dirt_with_grass"}, 0.35, {"deciduous_forest"}, 1, 100,
 	{"default:grass_2", "default:grass_3", "default:grass_4",
 	"default:grass_5"}, nil, nil, nil, ethereal.grassy)
 
-add_node({"default:dirt_with_grass"}, 0.35, {"grassytwo"}, 1, 100,
+add_node({"default:dirt_with_grass"}, 0.35, {"grassytwo"}, 1, 31000,
 	{"default:grass_2", "default:grass_3", "default:grass_4",
 	"default:grass_5"}, nil, nil, nil, ethereal.grassytwo)
 
-add_node({"default:dirt_with_grass"}, 0.35, {"jumble"}, 1, 100,
+add_node({"default:dirt_with_grass","default:dirt_with_rainforest_litter"}, 0.35, {"jumble"}, 1, 31000,
 	{"default:grass_2", "default:grass_3", "default:grass_4",
 	"default:grass_5"}, nil, nil, nil, ethereal.jumble)
 
@@ -325,11 +335,11 @@ add_node({"ethereal:prairie_dirt"}, 0.35, {"prairie"}, 1, 100,
 	{"default:grass_2", "default:grass_3", "default:grass_4",
 	"default:grass_5"}, nil, nil, nil, ethereal.prairie)
 
-add_node({"ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.375, {"grove"}, 1, 100,
+add_node({"ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.375, {"grove"}, 1, 31000,
 	{"default:grass_2", "default:grass_3", "default:grass_4",
 	"default:grass_5"}, nil, nil, nil, ethereal.grove)
 
-add_node({"ethereal:grove_dirt"}, 0.35, {"mediterranean"}, 1, 100,
+add_node({"ethereal:grove_dirt"}, 0.35, {"mediterranean"}, 1, 31000,
 	{"default:grass_2", "default:grass_3", "default:grass_4",
 	"default:grass_5"}, nil, nil, nil, ethereal.mediterranean)
 
@@ -340,7 +350,7 @@ add_node({"ethereal:bamboo_dirt"}, 0.35, {"bamboo"}, 1, 100,
 add_node({"default:dirt_with_grass"}, 0.35, {"grassland", "swamp", "marsh"},
 	1, 31000, {"default:grass_4", "default:grass_5"}, nil, nil, nil, 1)
 
-add_node({"ethereal:bamboo_dirt"}, 0.35, {"sakura"}, 1, 100,
+add_node({"ethereal:bamboo_dirt"}, 0.35, {"sakura"}, 1, 31000,
 	{"default:grass_2", "default:grass_3", "default:grass_3",
 	"default:grass_4"}, nil, nil, nil, ethereal.sakura)
 
@@ -359,7 +369,7 @@ else
 end]]
 
 -- ferns
-add_node({"ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.2, {"grove"}, 1, 100, {"ethereal:fern"},
+add_node({"ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.2, {"grove"}, 1, 31000, {"ethereal:fern"},
 	nil, nil, nil, ethereal.grove)
 
 add_node({"default:dirt_with_grass"}, 0.1, {"swamp"}, 1, 100,
@@ -443,7 +453,7 @@ add_node({"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"},
 	ethereal.junglee)
 
 -- carrot, cucumber, potato, tomato, corn, coffee, raspberry, rhubarb
-add_node({"default:dirt_with_grass"}, 0.002, {"grassytwo"}, 1, 100,
+add_node({"default:dirt_with_grass"}, 0.002, {"grassytwo"}, 1, 31000,
 	{"farming:carrot_7", "farming:cucumber_4", "farming:potato_3", "farming:vanilla_7",
 	"farming:tomato_7", "farming:corn_8", "farming:coffee_5", "farming:blackberry_4",
 	"farming:raspberry_4", "farming:rhubarb_3", "farming:blueberry_4",
@@ -458,7 +468,7 @@ add_node({"default:dirt_with_grass"}, 0.002, {"deciduous_forest"}, 1, 100,
 	"farming:beetroot_5", "farming:sunflower_8",
 	"farming:eggplant_3"}, nil, nil, nil, ethereal.grassy)
 
-add_node({"default:dirt_with_grass"}, 0.002, {"jumble"}, 1, 100,
+add_node({"default:dirt_with_grass"}, 0.002, {"jumble"}, 1, 31000,
 	{"farming:carrot_7", "farming:cucumber_4", "farming:potato_3", "farming:vanilla_7",
 	"farming:tomato_7", "farming:corn_8", "farming:coffee_5", "farming:blackberry_4",
 	"farming:raspberry_4", "farming:rhubarb_3", "farming:blueberry_4",
