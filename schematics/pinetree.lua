@@ -1,7 +1,8 @@
 
 local _ = {name = "air", prob = 0}
 local L = {name = "ethereal:pineleaves", prob = 255}
-local T = {name = "default:pinetree", prob = 255}
+local t = {name = "default:pinetree", prob = 255}
+local T = {name = "default:pinetree", prob = 255, force_place = true}
 
 ethereal.pinetree = {
 
@@ -49,9 +50,9 @@ ethereal.pinetree = {
 	_,_,_,T,_,_,_,
 	_,_,L,T,L,_,_,
 	L,L,L,T,L,L,L,
-	_,_,L,T,L,_,_,
-	_,L,L,T,L,L,_,
-	_,_,L,T,L,_,_,
+	_,_,L,t,L,_,_,
+	_,L,L,t,L,L,_,
+	_,_,L,t,L,_,_,
 	_,_,_,L,_,_,_,
 
 	_,_,_,_,_,_,_,

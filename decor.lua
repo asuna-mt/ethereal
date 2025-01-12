@@ -1,150 +1,135 @@
--- water pools in swamp areas if 5.0 detected
-if minetest.registered_nodes["default:permafrost"] then
+-- register decoration helper
 
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {"default:dirt_with_grass"},
-		place_offset_y = -1,
-		sidelen = 16,
-		fill_ratio = 0.01,
-		biomes = {"swamp","marsh"},
-		y_max = 2,
-		y_min = 1,
-		flags = "force_placement",
-		decoration = "default:water_source",
-		spawn_by = "default:dirt_with_grass",
-		num_spawn_by = 8
-	})
+local function register_decoration(enabled, def)
 
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {"default:dirt_with_grass"},
-		place_offset_y = -1,
-		sidelen = 16,
-		fill_ratio = 0.1,
-		biomes = {"swamp","marsh"},
-		y_max = 2,
-		y_min = 1,
-		flags = "force_placement",
-		decoration = "default:water_source",
-		spawn_by = {"default:dirt_with_grass", "default:water_source"},
-		num_spawn_by = 8
-	})
+	if enabled ~= 1 then return end
 
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {"default:dirt_with_grass"},
-		place_offset_y = -1,
-		sidelen = 16,
-		fill_ratio = 0.33,
-		biomes = {"marsh"},
-		y_max = 32,
-		y_min = 1,
-		flags = "force_placement",
-		decoration = "default:water_source",
-		spawn_by = {"default:dirt_with_grass", "default:water_source"},
-		num_spawn_by = 8
-	})
+	def.sidelen = def.sidelen or 80 -- some handy defaults
+	def.deco_type = "simple"
+	def.y_min = def.y_min or 1
+	def.y_max = def.y_max or 31000
+
+	minetest.register_decoration(def)
 end
 
-if minetest.registered_nodes["default:dry_dirt_with_dry_grass"] then
+-- thin ice
 
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {"default:dry_dirt_with_dry_grass"},
-		sidelen = 4,
-		noise_params = {
-			offset = -1.5,
-			scale = -1.5,
-			spread = {x = 200, y = 200, z = 200},
-			seed = 329,
-			octaves = 4,
-			persist = 1.0
-		},
-		biomes = {"plains"},
-		y_max = 31000,
-		y_min = 1,
-		decoration = "default:dry_dirt",
-		place_offset_y = -1,
-		flags = "force_placement"
-	})
+register_decoration(ethereal.frost, {
+	place_on = {"default:silver_sand"},
+	fill_ratio = 1.0, y_min = 0, y_max = 0,
+	decoration = "ethereal:thin_ice", place_offset_y = 1,
+	biomes = {"frost_ocean"} })
+
+-- water pools in swamp areas
+
+register_decoration(1, {
+	place_on = {"default:dirt_with_grass"},
+	sidelen = 4, fill_ratio = 0.02, y_min = 1, y_max = 3,
+	biomes = {"swamp","marsh"},
+	flags = "force_placement",
+	decoration = "default:water_source", place_offset_y = -1,
+	spawn_by = "default:dirt_with_grass", num_spawn_by = 8})
+
+register_decoration(1, {
+	place_on = {"default:dirt_with_grass"},
+	sidelen = 4, fill_ratio = 0.33, y_min = 1, y_max = 32,
+	biomes = {"marsh"},
+	flags = "force_placement",
+	decoration = "default:water_source", place_offset_y = -1,
+	spawn_by = {"default:dirt_with_grass", "default:water_source"}, num_spawn_by = 8})
+
+-- dry dirt patches
+
+register_decoration(1, {
+	place_on = {"default:dry_dirt_with_dry_grass"},
+	sidelen = 4,
+	noise_params = {offset = -1.5, scale = -1.5, spread = {x = 200, y = 200, z = 200},
+			seed = 329, octaves = 4, persist = 1.0},
+	biomes = {"plains"},
+	decoration = "default:dry_dirt", place_offset_y = -1,
+	flags = "force_placement"
+})
+
+-- rainforest litter in grove biome
+
+register_decoration(1, {
+	place_on = {"ethereal:grove_dirt"},
+	sidelen = 4,
+	noise_params = {offset = -0.0025, scale = 0.5, spread = {x = 100, y = 100, z = 100},
+			seed = 329, octaves = 1, persist = 1.0},
+	biomes = {"grove"},
+	decoration = "default:dirt_with_rainforest_litter", place_offset_y = -1,
+	flags = "force_placement"
+})
+
+-- farming redo check, salt crystal if found, strawberry if not
+
+if minetest.get_modpath("farming") and farming.mod and farming.mod == "redo" then
+
+	register_decoration(ethereal.grayness, {
+		place_on = "default:silver_sand",
+		fill_ratio = 0.001,
+		decoration = "farming:salt_crystal"})
+else
+	register_decoration(1, {
+		place_on = {"default:dirt_with_grass", "ethereal:prairie_dirt"},
+		sidelen = 16, y_min = 15, y_max = 55,
+		noise_params = {offset = 0, scale = 0.002, spread = {x = 100, y = 100, z = 100},
+				seed = 143, octaves = 3, persist = 0.6},
+		decoration = "ethereal:strawberry_7"})
 end
 
-if minetest.registered_nodes["default:dirt_with_rainforest_litter"] then
+-- firethorn shrub
 
-	-- Rainforest dirt in grove biome
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {"ethereal:grove_dirt"},
-		sidelen = 4,
-		noise_params = {
-			offset = -0.0025,
-			scale = 0.5,
-			spread = {x = 100, y = 100, z = 100},
-			seed = 329,
-			octaves = 1,
-			persist = 1.0
-		},
-		biomes = {"grove"},
-		y_max = 31000,
-		y_min = 1,
-		decoration = "default:dirt_with_rainforest_litter",
-		place_offset_y = -1,
-		flags = "force_placement"
-	})
-end
+register_decoration(ethereal.glacier, {
+	place_on = "default:snowblock",
+	fill_ratio = 0.001, y_min = 1, y_max = 30,
+	biomes = {"glacier"},
+	decoration = "ethereal:firethorn"})
 
+-- caverealm icicle
 
--- helper string
-local tmp
+register_decoration((minetest.get_modpath("caverealms") and 1), {
+	place_on = "default:snowblock",
+	fill_ratio = 0.008, y_min = 3, y_max = 30,
+	biomes = {"glacier"},
+	decoration = "caverealms:icicle_up"})
 
--- helper function
-local add_node = function(a, b, c, d, e, f, g, h, i, j)
+-- dry grass
 
-	if j ~= 1 then return end
+register_decoration(ethereal.savanna, {
+	place_on = {"default:dry_dirt_with_dry_grass", "default:dirt_with_dry_grass"},
+	fill_ratio = 0.25,
+	biomes = {"savanna"},
+	decoration = {"default:dry_grass_2", "default:dry_grass_3", "default:dry_grass_4",
+			"default:dry_grass_5"}})
 
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = a,
-		sidelen = 80,
-		fill_ratio = b,
-		biomes = c,
-		y_min = d,
-		y_max = e,
-		decoration = f,
-		height_max = g,
-		spawn_by = h,
-		num_spawn_by = i
-	})
-end
+register_decoration(ethereal.plains, {
+	place_on = {"default:dry_dirt_with_dry_grass"},
+	fill_ratio = 0.875,
+	biomes = {"mesa_redwood"},
+	decoration = {"default:dry_grass_2", "default:dry_grass_3", "default:dry_grass_4",
+			"default:dry_grass_5","default:grass_1"}})
 
-
---firethorn shrub
-add_node({"default:snowblock"}, 0.001, {"glacier"}, 1, 30,
-	{"ethereal:firethorn"}, nil, nil, nil, ethereal.glacier)
+register_decoration(ethereal.mesa, {
+	place_on = {"default:dirt_with_dry_grass"},
+	fill_ratio = 0.25,
+	biomes = {"mesa"},
+	decoration = {"default:dry_grass_2", "default:dry_grass_3", "default:dry_grass_4",
+			"default:dry_grass_5"}})
 
 -- scorched tree
-add_node({"ethereal:fiery_dirt"}, 0.000275, {"fiery"}, 4, 100,
-	{"ethereal:scorched_tree"}, 6, nil, nil, ethereal.fiery)
 
--- dry shrub
-add_node({"default:dry_dirt"}, 0.005, {"plains"}, 4, 31000,
-	{"default:dry_shrub"}, nil, nil, nil, ethereal.plains)
+register_decoration(ethereal.fiery, {
+	place_on = {"default:fiery_dirt"},
+	fill_ratio = 0.000275,
+	biomes = {"fiery"},
+	decoration = "ethereal:scorched_tree"}
+	height_max = 6)
 
-add_node({"default:dirt_with_grass"}, 0.00325, {"jumble"}, 4, 31000,
-	{"default:dry_shrub"}, nil, nil, nil, ethereal.jumble)
+-- Special orange baked clay surface decor for mesa
 
---[[add_node({"default:sand"}, 0.015, {"deciduous_forest_ocean"}, 1, 100,
-	{"default:dry_shrub"}, nil, nil, nil, ethereal.grassy)]]
-
-add_node({"default:desert_sand"}, 0.0025, {"desert"}, 1, 100,
-	{"default:dry_shrub"}, nil, nil, nil, ethereal.desert)
-
-add_node({"default:sandstone"}, 0.0025, {"sandstone"}, 1, 100,
-	{"default:dry_shrub"}, nil, nil, nil, ethereal.sandstone)
-
-	-- Special orange baked clay surface decor for mesa
-minetest.register_decoration({
+register_decoration(ethereal.mesa,{
 	deco_type = "simple",
 	place_on = {"default:dirt_with_dry_grass"},
 	sidelen = 2,
@@ -164,68 +149,63 @@ minetest.register_decoration({
 	flags = "force_placement"
 })
 
-add_node({"bakedclay:red", "bakedclay:orange"}, 0.015, {"mesa"}, 1, 100,
-	{"default:dry_shrub"}, nil, nil, nil, ethereal.mesa)
+-- dry shrub
+register_decoration(ethereal.plains, {
+	place_on = {"default:dry_dirt"},
+	fill_ratio = 0.005,
+	biomes = {"plains"},
+	decoration = "default:dry_shrub"})
 
--- dry grass
-add_node({"default:dry_dirt_with_dry_grass",
-	"default:dirt_with_dry_grass"}, 0.875, {"plains"}, 1, 31000,
-	{"default:dry_grass_2", "default:dry_grass_3", "default:dry_grass_4",
-	"default:dry_grass_5","default:grass_1"}, nil, nil, nil, ethereal.plains)
+register_decoration(ethereal.jumble, {
+	place_on = {"default:dirt_with_grass"},
+	fill_ratio = 0.00325,
+	biomes = {"jumble"},
+	decoration = "default:dry_shrub"})
 
-add_node({"default:dirt_with_dry_grass"}, 0.25, {"mesa"}, 1, 31000,
-	{"default:dry_grass_2", "default:dry_grass_3", "default:dry_grass_4",
-	"default:dry_grass_5"}, nil, nil, nil, ethereal.mesa)
+register_decoration(ethereal.desert, {
+	place_on = {"default:desert_sand"},
+	fill_ratio = 0.0025,
+	biomes = {"desert"},
+	decoration = "default:dry_shrub"})
 
-add_node({"default:desert_stone"}, 0.005, {"caves"}, 5, 40,
-	{"default:dry_grass_2", "default:dry_grass_3", "default:dry_shrub"},
-	nil, nil, nil, ethereal.caves)
+register_decoration(ethereal.sandstone_desert, {
+	place_on = {"default:sand"},
+	fill_ratio = 0.0025,
+	y_min = 5,
+	biomes = {"sandstone_desert"},
+	decoration = "default:dry_shrub"})
 
--- flowers & strawberry
---[[add_node({"default:dirt_with_grass"}, 0.025, {"deciduous_forest"}, 1, 100,
-	{"flowers:dandelion_white", "flowers:dandelion_yellow",
-	"flowers:geranium", "flowers:rose", "flowers:tulip",
-	"flowers:viola", "ethereal:strawberry_7"}, nil, nil, nil,
-	ethereal.grassy)]]
+register_decoration(ethereal.mesa, {
+	place_on = {"bakedclay:red","bakedclay:orange"},
+	fill_ratio = 0.015,
+	biomes = {"mesa"},
+	decoration = "default:dry_shrub"})
 
---[[add_node({"default:dirt_with_grass"}, 0.025, {"grassytwo"}, 1, 100,
-	{"flowers:dandelion_white", "flowers:dandelion_yellow",
-	"flowers:geranium", "flowers:rose", "flowers:tulip",
-	"flowers:viola", "ethereal:strawberry_7"}, nil, nil, nil,
-	ethereal.grassytwo)]]
-
--- prairie flowers & strawberry
-add_node({"ethereal:prairie_dirt"}, 0.035, {"prairie"}, 1, 100,
-	{"flowers:dandelion_white", "flowers:dandelion_yellow",
-	"flowers:geranium", "flowers:rose", "flowers:tulip",
-	"flowers:viola", "ethereal:strawberry_7",
-	"flowers:chrysanthemum_green", "flowers:tulip_black"}, nil, nil, nil,
-	ethereal.prairie)
-
--- crystal spike & crystal grass
-add_node({"ethereal:crystal_dirt"}, 0.02, {"frost", "frost_floatland"}, 1, 1750,
-	{"ethereal:crystal_spike", "ethereal:crystalgrass"}, nil, nil, nil,
-	ethereal.frost)
+register_decoration(ethereal.caves, {
+	place_on = {"default:desert_stone"},
+	fill_ratio = 0.005, y_min = 5, y_max = 42,
+	biomes = {"caves"},
+	decoration = {"default:dry_grass_2", "default:dry_grass_3", "default:dry_shrub"}})
 
 -- red shrub
-add_node({"ethereal:fiery_dirt"}, 0.10, {"fiery"}, 1, 100,
-	{"ethereal:dry_shrub"}, nil, nil, nil, ethereal.fiery)
+
+register_decoration(ethereal.fiery, {
+	place_on = {"ethereal:fiery_dirt"},
+	fill_ratio = 0.10,
+	biomes = {"fiery"},
+	decoration = "ethereal:dry_shrub"})
 
 -- snowy grass
-add_node({"ethereal:gray_dirt"}, 0.175, {"grayness"}, 1, 31000,
-	{"ethereal:snowygrass"}, nil, nil, nil, ethereal.grayness)
 
-add_node({"ethereal:cold_dirt", "default:dirt_with_coniferous_litter"}, 0.05,
-	{"coniferous_forest"}, 1, 100, {"ethereal:snowygrass"}, nil, nil, nil, ethereal.snowy)
+register_decoration(ethereal.snowy, {
+	place_on = {"ethereal:gray_dirt"},
+	fill_ratio = 0.175,
+	biomes = {"grayness"},
+	decoration = "ethereal:snowygrass"})
 
 -- cactus
---[[add_node({"default:sandstone"}, 0.002, {"sandstone_desert"}, 1, 100,
-	{"default:cactus"}, 3, nil, nil, ethereal.sandstone)]]
 
---[[add_node({"default:desert_sand"}, 0.005, {"desert"}, 1, 100,
-	{"default:cactus"}, 4, nil, nil, ethereal.desert)]]
-
-minetest.register_decoration({
+register_decoration(1,{
 	name = node,
 	deco_type = "simple",
 	sidelen = 8,
@@ -252,137 +232,132 @@ minetest.register_decoration({
 	decoration = "default:cactus",
 })
 
--- wild red mushroom
-add_node({"ethereal:mushroom_dirt"}, 0.25, {"mushroom"}, 1, 31000,
-	{"flowers:mushroom_red"}, nil, nil, nil, ethereal.mushroom)
-
-add_node({"default:dirt_with_rainforest_litter"}, 0.0075, {"jumble"}, 1, 31000,
-	{"flowers:mushroom_red"}, nil, nil, nil, ethereal.jumble)
-
 -- spore grass
-add_node({"ethereal:mushroom_dirt"}, 0.175, {"mushroom"}, 1, 31000,
-	{"ethereal:spore_grass"}, nil, nil, nil, ethereal.mushroom)
 
+register_decoration(ethereal.mushroom, {
+	place_on = {"ethereal:mushroom_dirt"},
+	fill_ratio = 0.175,
+	biomes = {"mushroom"},
+	decoration = "ethereal:spore_grass"})
 
-local list = {
-	{"junglee", {"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"}, ethereal.junglee},
-	{"deciduous_forest", {"default:dirt_with_grass"}, ethereal.grassy},
-	{"grassytwo", {"default:dirt_with_grass"}, ethereal.grassytwo},
-	{"prairie", {"ethereal:prairie_dirt"}, ethereal.prairie},
-	{"mushroom", {"ethereal:mushroom_dirt"}, ethereal.mushroom},
-	{"swamp", {"default:dirt_with_grass"}, ethereal.swamp},
-	{"marsh", {"default:dirt_with_grass"}, ethereal.swamp},
-}
+-- slime mold
 
--- wild red and brown mushrooms
-for _, row in pairs(list) do
+register_decoration(ethereal.mushroom, {
+	place_on = {"default:clay"},
+	fill_ratio = 0.1, y_min = 1, y_max = 5,
+	biomes = {"mushroom_shore"},
+	decoration = "ethereal:slime_mold"})
 
-	if row[3] == 1 then
+-- red & brown mushroom
 
-		minetest.register_decoration({
-			deco_type = "simple",
-			place_on = row[2],
-			sidelen = 16,
-			noise_params = {
-				offset = 0,
-				scale = 0.009,
-				spread = {x = 200, y = 200, z = 200},
-				seed = 2,
-				octaves = 3,
-				persist = 0.66
-			},
-			biomes = {row[1]},
-			y_min = 1,
-			y_max = 31000,
-			decoration = {"flowers:mushroom_brown", "flowers:mushroom_red"}
-		})
-	end
-end
+register_decoration(1,{
+	deco_type = "simple",
+	place_on = {
+		"default:dirt_with_grass",
+		"default:dirt_with_rainforest_litter",
+		"ethereal:prairie_dirt",
+		"ethereal:mushroom_dirt",
+	},
+	sidelen = 16,
+	noise_params = {
+		offset = 0,
+		scale = 0.009,
+		spread = {x = 200, y = 200, z = 200},
+		seed = 2,
+		octaves = 3,
+		persist = 0.66
+	},
+	biomes = {
+		"rainforest",
+		"deciduous_forest",
+		"grassytwo",
+		"prairie",
+		"swamp",
+		"marsh",
+		"mushroom",
+	},
+	decoration = {"flowers:mushroom_brown", "flowers:mushroom_red"}
+})
 
 -- stumps
-add_node({"default:dirt_with_grass"}, 0.00175, {"jumble"}, 4, 31000,
-	{"default:tree"}, 4, nil, nil, ethereal.jumble)
+
+register_decoration(ethereal.jumble, {
+	place_on = {"default:dirt_with_grass"},
+	fill_ratio = 0.00175,
+	biomes = {"jumble"},
+	y_min = 4,
+	decoration = "default:tree",
+	height_max = 4})
 
 -- jungle grass
-add_node({"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"},
-	0.10, {"junglee"}, 1, 100, {"default:junglegrass"}, nil, nil, nil,
-	ethereal.junglee)
 
-add_node({"ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.1, {"jumble","grove"}, 1, 31000,
-	{"default:junglegrass"}, nil, nil, nil, ethereal.jumble)
+register_decoration(ethereal.junglee, {
+	place_on = {"default:dirt_with_rainforest_litter"},
+	fill_ratio = 0.1,
+	biomes = {"rainforest"},
+	decoration = "default:junglegrass"})
 
-add_node({"default:dirt_with_grass"}, 0.25, {"swamp","marsh"}, 1, 31000,
-	{"default:junglegrass"}, nil, nil, nil, ethereal.swamp)
+register_decoration(ethereal.jumble, {
+	place_on = {"default:dirt_with_grass"},
+	fill_ratio = 0.1,
+	biomes = {"jumble", "grove"},
+	decoration = "default:junglegrass"})
+
+register_decoration(ethereal.swamp, {
+	place_on = {"default:dirt_with_grass"},
+	fill_ratio = 0.25,
+	biomes = {"swamp","marsh"},
+	decoration = "default:junglegrass"})
 
 -- grass
-add_node({"default:dirt_with_grass"}, 0.35, {"deciduous_forest"}, 1, 100,
-	{"default:grass_2", "default:grass_3", "default:grass_4",
-	"default:grass_5"}, nil, nil, nil, ethereal.grassy)
 
-add_node({"default:dirt_with_grass"}, 0.35, {"grassytwo"}, 1, 31000,
-	{"default:grass_2", "default:grass_3", "default:grass_4",
-	"default:grass_5"}, nil, nil, nil, ethereal.grassytwo)
+register_decoration(ethereal.grassytwo, {
+	place_on = {"default:dirt_with_grass"},
+	fill_ratio = 0.35,
+	biomes = {"grassytwo"},
+	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
 
-add_node({"default:dirt_with_grass","default:dirt_with_rainforest_litter"}, 0.35, {"jumble"}, 1, 31000,
-	{"default:grass_2", "default:grass_3", "default:grass_4",
-	"default:grass_5"}, nil, nil, nil, ethereal.jumble)
+register_decoration(ethereal.jumble, {
+	place_on = {"default:dirt_with_grass","default:dirt_with_rainforest_litter"},
+	fill_ratio = 0.35,
+	biomes = {"jumble"},
+	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
 
-add_node({"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"},
-	0.35, {"junglee"}, 1, 100, {"default:grass_2", "default:grass_3",
-	"default:grass_4", "default:grass_5"}, nil, nil, nil, ethereal.junglee)
+register_decoration(ethereal.grove, {
+	place_on = {"ethereal:grove_dirt","default:dirt_with_rainforest_litter"},
+	fill_ratio = 0.375,
+	biomes = {"grove"},
+	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
 
-add_node({"ethereal:prairie_dirt"}, 0.35, {"prairie"}, 1, 100,
-	{"default:grass_2", "default:grass_3", "default:grass_4",
-	"default:grass_5"}, nil, nil, nil, ethereal.prairie)
+register_decoration(ethereal.mediterranean, {
+	place_on = {"ethereal:grove_dirt"},
+	fill_ratio = 0.35,
+	biomes = {"mediterranean"},
+	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
 
-add_node({"ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.375, {"grove"}, 1, 31000,
-	{"default:grass_2", "default:grass_3", "default:grass_4",
-	"default:grass_5"}, nil, nil, nil, ethereal.grove)
+register_decoration(ethereal.bamboo, {
+	place_on = {"ethereal:bamboo_dirt"},
+	fill_ratio = 0.35,
+	biomes = {"bamboo"},
+	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
 
-add_node({"ethereal:grove_dirt"}, 0.35, {"mediterranean"}, 1, 31000,
-	{"default:grass_2", "default:grass_3", "default:grass_4",
-	"default:grass_5"}, nil, nil, nil, ethereal.mediterranean)
-
-add_node({"ethereal:bamboo_dirt"}, 0.35, {"bamboo"}, 1, 100,
-	{"default:grass_2", "default:grass_3", "default:grass_4",
-	"default:grass_5"}, nil, nil, nil, ethereal.bamboo)
-
-add_node({"default:dirt_with_grass"}, 0.35, {"grassland", "swamp", "marsh"},
-	1, 31000, {"default:grass_4", "default:grass_5"}, nil, nil, nil, 1)
-
-add_node({"ethereal:bamboo_dirt"}, 0.35, {"sakura"}, 1, 31000,
-	{"default:grass_2", "default:grass_3", "default:grass_3",
-	"default:grass_4"}, nil, nil, nil, ethereal.sakura)
-
---[[add_node({"ethereal:bamboo_dirt"}, 0.025, {"sakura"}, 1, 100,
-	{"ethereal:lilac"}, nil, nil, nil, ethereal.sakura)]]
-
--- grass on sand
---[[if minetest.registered_nodes["default:marram_grass_1"] then
-
-	add_node({"default:sand"}, 0.25, {"sandclay"}, 3, 4, {"default:marram_grass_1",
-		"default:marram_grass_2", "default:marram_grass_3"}, nil, nil, nil,
-		ethereal.sandclay)
-else
-	add_node({"default:sand"}, 0.25, {"sandclay"}, 3, 4, {"default:grass_2",
-		"default:grass_3"}, nil, nil, nil, ethereal.sandclay)
-end]]
+register_decoration(1, {
+	place_on = {"default:dirt_with_grass"},
+	fill_ratio = 0.35,
+	biomes = {"grassland","swamp","marsh"},
+	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
 
 -- ferns
-add_node({"ethereal:grove_dirt","default:dirt_with_rainforest_litter"}, 0.2, {"grove"}, 1, 31000, {"ethereal:fern"},
-	nil, nil, nil, ethereal.grove)
 
-add_node({"default:dirt_with_grass"}, 0.1, {"swamp"}, 1, 100,
-	{"ethereal:fern"}, nil, nil, nil, ethereal.swamp)
-
-add_node({"ethereal:crystal_dirt"}, 0.001, {"frost_floatlands"}, 1025, 1750,
-	{"ethereal:fern"}, nil, nil, nil, ethereal.frost)
+register_decoration(ethereal.grove, {
+	place_on = {"default:dirt_with_rainforest_litter", "ethereal:grove_dirt"},
+	fill_ratio = 0.2,
+	biomes = {"grove"},
+	decoration = "ethereal:fern"})
 
 -- snow
---[[add_node({"ethereal:cold_dirt", "default:dirt_with_coniferous_litter"},
-	0.2, {"coniferous_forest"}, 4, 48, {"default:snow"}, nil, nil, nil, ethereal.snowy)]]
 
-minetest.register_decoration({
+register_decoration(1,{
 	deco_type = "simple",
 	place_on = "default:dirt_with_coniferous_litter",
 	sidelen = 40,
@@ -395,20 +370,22 @@ minetest.register_decoration({
 		persist = 1.0
 	},
 	biomes = {"coniferous_forest"},
-	y_max = 31000,
-	y_min = 1,
 	decoration = "default:snow",
 })
 
-add_node({"default:dirt_with_snow"}, 0.8, {"taiga"}, 49, 31000,
-	{"default:snow"}, nil, nil, nil, ethereal.alpine)
+register_decoration(ethereal.alpine, {
+	place_on = {"default:dirt_with_snow"},
+	fill_ratio = 0.8, y_min = 40, y_max = 140,
+	biomes = {"taiga"},
+	decoration = "default:snow"})
 
--- Check onion setting
+-- wild onion and setting
+
 local abundant = minetest.settings:get_bool("ethereal.abundant_onions") ~= false
-local onion_rate = abundant and 0.025 or 0.005
 
 -- wild onion
-minetest.register_decoration(asuna.features.crops.onion.inject_decoration({
+
+register_decoration(1,asuna.features.crops.onion.inject_decoration({
 	deco_type = "simple",
 	sidelen = 8,
 	place_on = {"group:soil"},
@@ -431,357 +408,262 @@ minetest.register_decoration(asuna.features.crops.onion.inject_decoration({
 }))
 
 -- papyrus
-add_node({"default:dirt_with_grass"}, 0.1, {"deciduous_forest"}, 1, 1,
-	{"default:papyrus"}, 4, "default:water_source", 1, ethereal.grassy)
 
-add_node({"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"},
-	0.1, {"junglee"}, 1, 1, {"default:papyrus"}, 4, "default:water_source",
-	1, ethereal.junglee)
+register_decoration(1, {
+	place_on = {"default:dirt_with_grass", "default:dirt_with_rainforest_litter"},
+	fill_ratio = 0.125, y_min = 1, y_max = 32,
+	biomes = {"rainforest", "swamp", "marsh"},
+	decoration = "default:papyrus", height_max = 4,
+	spawn_by = "default:water_source", num_spawn_by = 1})
 
-add_node({"default:dirt_with_grass"}, 0.125, {"swamp", "marsh"}, 1, 32,
-	{"default:papyrus"}, 4, "default:water_source", 1, ethereal.swamp)
+-- blue agave from wine mod
 
---= Farming Redo plants
+if minetest.get_modpath("wine") then
+  
+  register_decoration(ethereal.desert, {
+    place_on = {"default:desert_sand"},
+    sidelen = 16, fill_ratio = 0.001,
+    biomes = {"desert"},
+    decoration = {"wine:blue_agave"}})
+end
 
-if false and farming and farming.mod and farming.mod == "redo" then -- handled by Asuna fork of Farming Redo
+-- default ferns
 
-print ("[MOD] Ethereal - Farming Redo detected and in use")
+register_decoration(1, {
+	place_on = {"ethereal:cold_dirt", "default:dirt_with_coniferous_litter"},
+	sidelen = 16, fill_ratio = 0.2,
+	decoration = {"default:fern_1", "default:fern_2", "default:fern_3"} })
 
--- potato
-add_node({"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"},
-	0.002, {"junglee"}, 1, 100, {"farming:potato_3"}, nil, nil, nil,
-	ethereal.junglee)
+-- Tundra moss
 
--- carrot, cucumber, potato, tomato, corn, coffee, raspberry, rhubarb
-add_node({"default:dirt_with_grass"}, 0.002, {"grassytwo"}, 1, 31000,
-	{"farming:carrot_7", "farming:cucumber_4", "farming:potato_3", "farming:vanilla_7",
-	"farming:tomato_7", "farming:corn_8", "farming:coffee_5", "farming:blackberry_4",
-	"farming:raspberry_4", "farming:rhubarb_3", "farming:blueberry_4",
-	"farming:cabbage_6", "farming:lettuce_5", "farming:sunflower_8",
-	"farming:asparagus"}, nil, nil, nil,
-	ethereal.grassytwo)
+register_decoration(ethereal.tundra, {
+	place_on = {"default:permafrost_with_stones"},
+	sidelen = 4, y_min = 2, y_max = 50,
+	noise_params = {offset = -0.8, scale = 2.0, spread = {x = 100, y = 100, z = 100},
+			seed = 53995, octaves = 3, persist = 1.0},
+	biomes = {"tundra"},
+	decoration = "default:permafrost_with_moss", place_offset_y = -1,
+	flags = "force_placement"})
 
-add_node({"default:dirt_with_grass"}, 0.002, {"deciduous_forest"}, 1, 100,
-	{"farming:carrot_7", "farming:cucumber_4", "farming:potato_3", "farming:vanilla_7",
-	"farming:tomato_7", "farming:corn_8", "farming:coffee_5", "farming:blackberry_4",
-	"farming:raspberry_4", "farming:rhubarb_3", "farming:blueberry_4",
-	"farming:beetroot_5", "farming:sunflower_8",
-	"farming:eggplant_3"}, nil, nil, nil, ethereal.grassy)
+-- Tundra patchy snow
 
-add_node({"default:dirt_with_grass"}, 0.002, {"jumble"}, 1, 31000,
-	{"farming:carrot_7", "farming:cucumber_4", "farming:potato_3", "farming:vanilla_7",
-	"farming:tomato_7", "farming:corn_8", "farming:coffee_5", "farming:blackberry_4",
-	"farming:raspberry_4", "farming:rhubarb_3", "farming:blueberry_4",
-	"farming:cabbage_6", "farming:lettuce_5",
-	"farming:spinach_3"}, nil, nil, nil, ethereal.jumble)
+register_decoration(ethereal.tundra, {
+	place_on = {"default:permafrost_with_moss", "default:permafrost_with_stones",
+			"default:stone", "default:gravel"},
+	sidelen = 4, y_min = 1, y_max = 50,
+	noise_params = {offset = 0, scale = 1.0, spread = {x = 100, y = 100, z = 100},
+			seed = 172555, octaves = 3, persist = 1.0},
+	biomes = {"tundra", "tundra_shore"},
+	decoration = "default:snow"})
 
-add_node({"ethereal:prairie_dirt"}, 0.025, {"prairie"}, 1, 100,
-	{"farming:carrot_7", "farming:cucumber_4", "farming:potato_3", "farming:parsley_3",
-	"farming:tomato_7", "farming:corn_8", "farming:coffee_5", "farming:blackberry_4",
-	"farming:raspberry_4", "farming:rhubarb_3", "farming:blueberry_4",
-	"farming:pea_5", "farming:beetroot_5", "farming:sunflower_8"}, nil, nil, nil,
-	ethereal.prairie)
+-- Tundra very sparse grass and dry shrubs
 
-add_node({"ethereal:grove_dirt"}, 0.002, {"mediterranean"}, 1, 100,
-	{"farming:parsley_3"}, nil, nil, nil, ethereal.mediterranean)
-
--- melon and pumpkin
-add_node({"ethereal:jungle_dirt", "default:dirt_with_rainforest_litter"},
-	0.001, {"junglee"}, 1, 1, {"farming:melon_8", "farming:pumpkin_8"},
-	nil, "default:water_source", 1, ethereal.junglee)
-
-add_node({"default:dirt_with_grass"}, 0.001, {"deciduous_forest"}, 1, 1,
-	{"farming:melon_8", "farming:pumpkin_8"}, nil, "default:water_source",
-	1, ethereal.grassy)
-
-add_node({"default:dirt_with_grass"}, 0.001, {"grassytwo"}, 1, 1,
-	{"farming:melon_8", "farming:pumpkin_8"}, nil, "default:water_source",
-	1, ethereal.grassytwo)
-
-add_node({"default:dirt_with_grass"}, 0.001, {"jumble"}, 1, 1,
-	{"farming:melon_8", "farming:pumpkin_8"}, nil, "default:water_source",
-	1, ethereal.jumble)
-
--- mint
-add_node({"default:dirt_with_grass", "default:dirt_with_coniferous_litter",
-	"ethereal:bamboo_dirt"}, 0.005, nil, 1, 75, "farming:mint_4", nil,
-	{"group:water", "group:sand"}, 1, 1)
-
--- green beans
-add_node({"default:dirt_with_grass"}, 0.001, {"grassytwo"}, 1, 100,
-	{"farming:beanbush"}, nil, nil, nil, ethereal.grassytwo)
-
--- grape bushel
-add_node({"default:dirt_with_grass"}, 0.001, {"grassytwo"}, 1, 100,
-	{"farming:grapebush"}, nil, nil, nil, ethereal.grassytwo)
-
-add_node({"default:dirt_with_grass"}, 0.001, {"deciduous_forest"}, 1, 100,
-	{"farming:grapebush"}, nil, nil, nil, ethereal.grassy)
-
-add_node({"ethereal:prairie_dirt"}, 0.001, {"prairie"}, 1, 100,
-	{"farming:grapebush"}, nil, nil, nil, ethereal.prairie)
-
-minetest.register_decoration({
-	deco_type = "simple",
-	place_on = {"default:dirt_with_grass", "ethereal:prairie_dirt",
-			"default:dirt_with_rainforest_litter"},
-	sidelen = 16,
-	noise_params = {
-		offset = 0,
-		scale = 0.002,
-		spread = {x = 100, y = 100, z = 100},
-		seed = 760,
-		octaves = 3,
-		persist = 0.6
-	},
-	y_min = 5,
-	y_max = 35,
-	decoration = {
-		"farming:chili_8", "farming:garlic_5", "farming:pepper_5", "farming:pepper_6",
-		"farming:onion_5", "farming:hemp_7", "farming:pepper_7", "farming:soy_5",
-		"farming:ginger"
-	},
-	spawn_by = "group:tree",
-	num_spawn_by = 1
+register_decoration(1,{
+  deco_type = "simple",
+  place_on = {
+    "default:permafrost_with_moss",
+  },
+  sidelen = 16,
+  fill_ratio = 0.01,
+  biomes = {"tundra"},
+  y_max = 50,
+  y_min = 1,
+  decoration = {
+    "default:grass_1",
+    "default:dry_shrub",
+  },
 })
 
-minetest.register_decoration({
-	deco_type = "simple",
-	place_on = {"default:dirt_with_dry_grass"},
-	sidelen = 16,
-	noise_params = {
-		offset = 0,
-		scale = 0.002,
-		spread = {x = 100, y = 100, z = 100},
-		seed = 917,
-		octaves = 3,
-		persist = 0.6
-	},
-	y_min = 18,
-	y_max = 30,
-	decoration = {"farming:pineapple_8", "farming:soy_5"}
+-- Coral Reef
+
+register_decoration(1,{
+  name = "default:corals",
+  deco_type = "simple",
+  place_on = {
+    "default:sand",
+    "everness:mineral_sand",
+  },
+  place_offset_y = -1,
+  sidelen = 4,
+  noise_params = {
+    offset = -3,
+    scale = 4,
+    spread = {x = 50, y = 50, z = 50},
+    seed = 7013,
+    octaves = 3,
+    persist = 0.7,
+  },
+  biomes = asuna.features.ocean.tropical,
+  y_max = -2,
+  y_min = -36,
+  flags = "force_placement",
+  decoration = {
+    "default:coral_green", "default:coral_pink",
+    "default:coral_cyan", "default:coral_brown",
+    "default:coral_orange", "default:coral_skeleton"
+  }
 })
 
-minetest.register_decoration({
-	deco_type = "simple",
-	place_on = {"ethereal:grove_dirt"},
-	sidelen = 16,
-	noise_params = {
-		offset = 0,
-		scale = 0.002,
-		spread = {x = 100, y = 100, z = 100},
-		seed = 448,
-		octaves = 3,
-		persist = 0.6
-	},
-	y_min = 15,
-	y_max = 40,
-	decoration = {"farming:artichoke_5"},
-	spawn_by = "group:tree",
-	num_spawn_by = 1
+-- Kelp
+
+register_decoration(1,{
+  deco_type = "simple",
+  place_on = {
+    "default:sand",
+    "everness:mineral_sand",
+  },
+  place_offset_y = -1,
+  sidelen = 16,
+  noise_params = {
+    offset = -0.04,
+    scale = 0.2,
+    spread = {x = 200, y = 200, z = 200},
+    seed = 87112,
+    octaves = 3,
+    persist = 0.7
+  },
+  biomes = asuna.biome_groups.below,
+  y_max = -5,
+  y_min = -36,
+  flags = "force_placement",
+  decoration = "default:sand_with_kelp",
+  param2 = 48,
+  param2_max = 96
 })
+
+-- illumishrooms using underground decoration placement
+
+local function add_illumishroom(low, high, nodename)
+
+	register_decoration(1, {
+		place_on = {"default:stone_with_coal"},
+		sidelen = 16, fill_ratio = 0.5, y_min = low, y_max = high,
+		flags = "force_placement, all_floors",
+		decoration = nodename})
 end
 
-if ethereal.desert == 1 and minetest.get_modpath("wine") then
+add_illumishroom(-1000, -50, "ethereal:illumishroom")
+add_illumishroom(-2000, -1000, "ethereal:illumishroom2")
+add_illumishroom(-3000, -2000, "ethereal:illumishroom3")
 
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {"default:desert_sand"},
-		sidelen = 16,
-		fill_ratio = 0.001,
-		biomes = {"desert"},
-		decoration = {"wine:blue_agave"}
-	})
+--= Register Biome Decoration Using Plants Mega Pack Lite if Xanadu found
+
+if minetest.get_modpath("xanadu") then
+
+	--= Desert Biome
+
+	-- Cactus
+	register_decoration(1, {
+		place_on = {"default:desert_sand", "default:sandstone"},
+		sidelen = 16, fill_ratio = 0.005,
+		biomes = {"desert", "sandstone"},
+		decoration = {"xanadu:cactus_echinocereus", "xanadu:cactus_matucana",
+				"xanadu:cactus_baseball", "xanadu:cactus_golden"}})
+
+	-- Desert Plants
+	register_decoration(1, {
+		place_on = {"default:desert_sand", "default:sandstone", "default:sand"},
+		sidelen = 16, fill_ratio = 0.004,
+		biomes = {"desert", "sandstone"},
+		decoration = {"xanadu:desert_kangaroo", "xanadu:desert_brittle",
+				"xanadu:desert_ocotillo", "xanadu:desert_whitesage"}})
+
+	--=  Prairie Biome
+
+	-- Grass
+	register_decoration(1, {
+		place_on = {"ethereal:prairie_dirt", "default:dirt_with_grass"},
+		sidelen = 16, fill_ratio = 0.005,
+		biomes = {"prairie", "deciduous_forest", "grassytwo"},
+		decoration = {"xanadu:grass_prairie", "xanadu:grass_cord",
+				"xanadu:grass_wheatgrass", "xanadu:desert_whitesage"}})
+
+	-- Flowers
+	register_decoration(1, {
+		place_on = {"ethereal:prairie_dirt", "default:dirt_with_grass",
+				"ethereal:grove_dirt", "ethereal:bamboo_dirt"},
+		sidelen = 16, fill_ratio = 0.005,
+		biomes = {"prairie", "deciduous_forest", "grassytwo", "bamboo"},
+		decoration = {"xanadu:flower_jacobsladder", "xanadu:flower_thistle",
+				"xanadu:flower_wildcarrot"}})
+
+	register_decoration(1, {
+		place_on = {"ethereal:prairie_dirt", "default:dirt_with_grass",
+				"ethereal:grove_dirt"},
+		sidelen = 16, fill_ratio = 0.005,
+		biomes = {"prairie", "deciduous_forest", "grassytwo", "grove"},
+		decoration = {"xanadu:flower_delphinium", "xanadu:flower_celosia",
+				"xanadu:flower_daisy", "xanadu:flower_bluerose"}})
+
+	-- Shrubs
+	register_decoration(1, {
+		place_on = {"ethereal:prairie_dirt", "default:dirt_with_grass",
+				"ethereal:grove_dirt", "ethereal:jungle_grass", "ethereal:gray_dirt",
+				"default:dirt_with_rainforest_litter"},
+		sidelen = 16, fill_ratio = 0.005,
+		biomes = {"prairie", "deciduous_forest", "grassytwo", "grove", "rainforest",
+				"grayness", "jumble"},
+		decoration = {"xanadu:shrub_kerria", "xanadu:shrub_spicebush"}})
+
+	--= Jungle Biome
+
+	register_decoration(1, {
+		place_on = {"default:dirt_with_grass", "default:dirt_with_rainforest_litter"},
+		sidelen = 16, fill_ratio = 0.007,
+		biomes = {"rainforest", "jumble"},
+		decoration = {"xanadu:rainforest_guzmania", "xanadu:rainforest_devil",
+				"xanadu:rainforest_lazarus", "xanadu:rainforest_lollipop",
+				"xanadu:mushroom_woolly"}})
+
+	--= Cold Biomes
+
+	register_decoration(1, {
+		place_on = {"default:dirt_with_snow", "ethereal:gray_dirt"},
+		sidelen = 16, fill_ratio = 0.005,
+		biomes = {"coniferous_forest", "taiga", "grayness"},
+		decoration = {"xanadu:mountain_edelweiss", "xanadu:mountain_armeria",
+				"xanadu:mountain_bellflower", "xanadu:mountain_willowherb",
+				"xanadu:mountain_bistort"}})
+
+	--= Mushroom Biome
+
+	register_decoration(1, {
+		place_on = {"ethereal:mushroom_dirt"},
+		sidelen = 16, fill_ratio = 0.005,
+		biomes = {"mushroom"},
+		decoration = {"xanadu:mushroom_powderpuff", "xanadu:mushroom_chanterelle",
+				"xanadu:mushroom_parasol"}})
+
+	--= Lakeside
+
+	register_decoration(1, {
+		place_on = {"default:sand", "default:dirt_with_grass"},
+		sidelen = 16, fill_ratio = 0.015,
+		biomes = {"deciduous_forest_ocean", "grassland", "grassytwo", "jumble",
+				"swamp"},
+		decoration = {"xanadu:wetlands_cattails", "xanadu:wetlands_pickerel",
+				"xanadu:wetlands_mannagrass", "xanadu:wetlands_turtle"},
+		spawn_by = "default:water_source", num_spawn_by = 1})
+
+	--= Harsh Biomes
+
+	register_decoration(1, {
+		place_on = {"ethereal:mushroom_dirt", "default:dirt_with_grass",
+				"ethereal:gray_dirt", "ethereal:dirt_with_snow", "ethereal:prairie_dirt",
+				"ethereal:grove_dirt", "ethereal:dry_dirt", "ethereal:fiery_dirt",
+				"default:sand", "default:desert_sand", "ethereal:bamboo_dirt",
+				"default:dirt_with_rainforest_litter", "default:permafrost_with_stones"},
+		sidelen = 16, fill_ratio = 0.004,
+		biomes = {"mushroom", "prairie", "grayness", "plains", "desert", "rainforest",
+				"deciduous_forest", "grassytwo", "jumble", "coniferous_forest", "taiga",
+				"fiery", "mesa", "bamboo", "tundra"},
+		decoration = {"xanadu:spooky_thornbush", "xanadu:spooky_baneberry"}})
+
+		--= Poppy's growing in Clearing Biome in memory of RealBadAngel
+
+		register_decoration(1, {
+			place_on = {"default:dirt_with_grass"},
+			sidelen = 16, fill_ratio = 0.004,
+			biomes = {"grassland"},
+			decoration = {"xanadu:poppy"}})
 end
-
-
-if ethereal.snowy == 1 and minetest.registered_nodes["default:fern_1"] then
-
-	local function register_fern_decoration(seed, length)
-
-		minetest.register_decoration({
-			name = "default:fern_" .. length,
-			deco_type = "simple",
-			place_on = {
-				"ethereal:cold_dirt", "default:dirt_with_coniferous_litter"},
-			sidelen = 16,
-			noise_params = {
-				offset = 0,
-				scale = 0.2,
-				spread = {x = 100, y = 100, z = 100},
-				seed = seed,
-				octaves = 3,
-				persist = 0.7
-			},
-			y_max = 31000,
-			y_min = 6,
-			decoration = "default:fern_" .. length
-		})
-	end
-
-	register_fern_decoration(14936, 3)
-	register_fern_decoration(801, 2)
-	register_fern_decoration(5, 1)
-end
-
-
-if ethereal.tundra == 1 and minetest.registered_nodes["default:permafrost"] then
-
-	-- Tundra moss
-
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {"default:permafrost_with_stones"},
-		sidelen = 4,
-		noise_params = {
-			offset = -0.8,
-			scale = 2.0,
-			spread = {x = 100, y = 100, z = 100},
-			seed = 53995,
-			octaves = 3,
-			persist = 1.0
-		},
-		biomes = {"tundra"},
-		y_max = 50,
-		y_min = 2,
-		decoration = "default:permafrost_with_moss",
-		place_offset_y = -1,
-		flags = "force_placement"
-	})
-
-	-- Tundra patchy snow
-
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {
-			"default:permafrost_with_moss",
-			"default:permafrost_with_stones",
-			"default:stone",
-			"default:gravel"
-		},
-		sidelen = 4,
-		noise_params = {
-			offset = 0,
-			scale = 1.0,
-			spread = {x = 100, y = 100, z = 100},
-			seed = 172555,
-			octaves = 3,
-			persist = 1.0
-		},
-		biomes = {"tundra", "tundra_beach"},
-		y_max = 50,
-		y_min = 1,
-		decoration = "default:snow"
-	})
-
-	-- Tundra very sparse grass and dry shrubs
-
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {
-			"default:permafrost_with_moss",
-		},
-		sidelen = 16,
-		fill_ratio = 0.01,
-		biomes = {"tundra", "tundra_beach"},
-		y_max = 50,
-		y_min = 1,
-		decoration = {
-			"default:grass_1",
-			"default:dry_shrub",
-		},
-	})
-end
-
--- Coral Reef (Minetest 5.0)
-if minetest.registered_nodes["default:coral_green"] then
-
-	minetest.register_decoration({
-		name = "default:corals",
-		deco_type = "simple",
-		place_on = {
-			"default:sand",
-			"everness:mineral_sand",
-		},
-		place_offset_y = -1,
-		sidelen = 4,
-		noise_params = {
-			offset = -3,
-			scale = 4,
-			spread = {x = 50, y = 50, z = 50},
-			seed = 7013,
-			octaves = 3,
-			persist = 0.7,
-		},
-		biomes = asuna.features.ocean.tropical,
-		y_max = -2,
-		y_min = -36,
-		flags = "force_placement",
-		decoration = {
-			"default:coral_green", "default:coral_pink",
-			"default:coral_cyan", "default:coral_brown",
-			"default:coral_orange", "default:coral_skeleton"
-		}
-	})
-
-	-- Kelp
-
-	minetest.register_decoration({
-		name = "default:kelp",
-		deco_type = "simple",
-		place_on = {
-			"default:sand",
-			"everness:mineral_sand",
-		},
-		place_offset_y = -1,
-		sidelen = 16,
-		noise_params = {
-			offset = -0.04,
-			scale = 0.2,
-			spread = {x = 200, y = 200, z = 200},
-			seed = 87112,
-			octaves = 3,
-			persist = 0.7
-		},
-		biomes = asuna.biome_groups.below,
-		y_max = -5,
-		y_min = -36,
-		flags = "force_placement",
-		decoration = "default:sand_with_kelp",
-		param2 = 48,
-		param2_max = 96
-	})
-end
-
-
-local random = math.random
-
--- Generate Illumishroom in caves on top of coal
-minetest.register_on_generated(function(minp, maxp)
-
-	if minp.y > -30 or maxp.y < -3000 then
-		return
-	end
-
-	local bpos
-	local coal = minetest.find_nodes_in_area_under_air(
-			minp, maxp, "default:stone_with_coal")
-
-	for n = 1, #coal do
-
-		if random(2) == 1 then
-
-			bpos = {x = coal[n].x, y = coal[n].y + 1, z = coal[n].z}
-
-			if bpos.y > -3000 and bpos.y < -2000 then
-				minetest.swap_node(bpos, {name = "ethereal:illumishroom3"})
-
-			elseif bpos.y > -2000 and bpos.y < -1000 then
-				minetest.swap_node(bpos, {name = "ethereal:illumishroom2"})
-
-			elseif bpos.y > -1000 and bpos.y < -30 then
-				minetest.swap_node(bpos, {name = "ethereal:illumishroom"})
-			end
-		end
-	end
-end)

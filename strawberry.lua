@@ -1,13 +1,13 @@
 
-local S = ethereal.translate
+local S = minetest.get_translator("ethereal")
 
+-- Strawberry (can also be planted directly as seed)
 
--- Strawberry (can also be planted as seed)
 minetest.register_craftitem("ethereal:strawberry", {
 	description = S("Strawberry"),
 	inventory_image = "ethereal_strawberry.png",
 	wield_image = "ethereal_strawberry.png",
-	groups = {food_strawberry = 1, food_berry = 1, flammable = 2},
+	groups = {food_strawberry = 1, food_berry = 1},
 	on_use = minetest.item_eat(1),
 
 	on_place = function(itemstack, placer, pointed_thing)
@@ -15,9 +15,12 @@ minetest.register_craftitem("ethereal:strawberry", {
 	end
 })
 
+ethereal.add_eatable("ethereal:strawberry", 1)
 
--- Define Strawberry Bush growth stages
+-- Strawberry definition
+
 local def = {
+	description = S("Strawberry") .. S(" Crop"),
 	drawtype = "plantlike",
 	tiles = {"ethereal_strawberry_1.png"},
 	paramtype = "light",
@@ -27,8 +30,7 @@ local def = {
 	buildable_to = true,
 	drop = "",
 	selection_box = {
-		type = "fixed",
-		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
+		type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5}
 	},
 	groups = {
 		snappy = 3, flammable = 2, plant = 1, attached_node = 1,
@@ -38,25 +40,31 @@ local def = {
 }
 
 --stage 1
+
 minetest.register_node("ethereal:strawberry_1", table.copy(def))
 
 -- stage 2
+
 def.tiles = {"ethereal_strawberry_2.png"}
 minetest.register_node("ethereal:strawberry_2", table.copy(def))
 
 -- stage 3
+
 def.tiles = {"ethereal_strawberry_3.png"}
 minetest.register_node("ethereal:strawberry_3", table.copy(def))
 
 -- stage 4
+
 def.tiles = {"ethereal_strawberry_4.png"}
 minetest.register_node("ethereal:strawberry_4", table.copy(def))
 
 -- stage 5
+
 def.tiles = {"ethereal_strawberry_5.png"}
 minetest.register_node("ethereal:strawberry_5", table.copy(def))
 
 -- stage 6
+
 def.tiles = {"ethereal_strawberry_6.png"}
 def.drop = {
 	items = {
@@ -67,21 +75,22 @@ def.drop = {
 minetest.register_node("ethereal:strawberry_6", table.copy(def))
 
 -- stage 7
+
 def.tiles = {"ethereal_strawberry_7.png"}
 def.drop = {
 	items = {
 		{items = {"ethereal:strawberry 1"}, rarity = 1},
-		{items = {"ethereal:strawberry 2"}, rarity = 3}
+		{items = {"ethereal:strawberry 1"}, rarity = 3}
 	}
 }
 minetest.register_node("ethereal:strawberry_7", table.copy(def))
 
 -- stage 8 (final)
+
 def.tiles = {"ethereal_strawberry_8.png"}
 def.groups.growing = nil
 def.selection_box = {
-	type = "fixed",
-	fixed = {-0.5, -0.5, -0.5, 0.5, -2.5/16, 0.5}
+	type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -2.5/16, 0.5}
 }
 def.drop = {
 	items = {
@@ -91,6 +100,7 @@ def.drop = {
 }
 minetest.register_node("ethereal:strawberry_8", table.copy(def))
 
+-- register Abm to grow strawberry (this file wont be loaded if farming redo active)
 
 minetest.register_abm({
 	label = "Ethereal grow strawberry",
@@ -116,11 +126,7 @@ minetest.register_abm({
 		pos.y = pos.y + 1
 
 		-- do we have enough light?
-		local light = minetest.get_node_light(pos)
-
-		if not light or light < 13 then
-			return
-		end
+		local light = minetest.get_node_light(pos) or 0 ; if light < 13 then return end
 
 		-- grow to next stage
 		local num = node.name:split("_")[2]
@@ -130,4 +136,3 @@ minetest.register_abm({
 		minetest.swap_node(pos, node)
 	end
 })
-
