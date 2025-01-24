@@ -87,14 +87,6 @@ register_decoration(ethereal.glacier, {
 	biomes = {"glacier"},
 	decoration = "ethereal:firethorn"})
 
--- caverealm icicle
-
-register_decoration((minetest.get_modpath("caverealms") and 1), {
-	place_on = "default:snowblock",
-	fill_ratio = 0.008, y_min = 3, y_max = 30,
-	biomes = {"glacier"},
-	decoration = "caverealms:icicle_up"})
-
 -- dry grass
 
 register_decoration(ethereal.savanna, {
@@ -121,11 +113,31 @@ register_decoration(ethereal.mesa, {
 -- scorched tree
 
 register_decoration(ethereal.fiery, {
-	place_on = {"default:fiery_dirt"},
+	place_on = {"ethereal:fiery_dirt"},
 	fill_ratio = 0.000275,
 	biomes = {"fiery"},
-	decoration = "ethereal:scorched_tree"}
-	height_max = 6)
+	decoration = "ethereal:scorched_tree",
+	height_max = 6})
+
+-- fiery lava pits
+
+register_decoration(ethereal.fiery, {
+	place_on = {"ethereal:fiery_dirt"},
+	place_offset_y = -1,
+	spawn_by = "ethereal:fiery_dirt",
+	num_spawn_by = 7,
+	sidelen = 8,
+	noise_params = {
+		offset = 0.0125,
+		scale = 0.025,
+		spread = {x = 50, y = 50, z = 50},
+		seed = 909,
+		octaves = 2,
+		persist = 1.0
+	},
+	biomes = {"fiery"},
+	decoration = "default:lava_source",
+	flags = "force_placement"})
 
 -- Special orange baked clay surface decor for mesa
 
@@ -168,7 +180,7 @@ register_decoration(ethereal.desert, {
 	biomes = {"desert"},
 	decoration = "default:dry_shrub"})
 
-register_decoration(ethereal.sandstone_desert, {
+register_decoration(ethereal.sandstone, {
 	place_on = {"default:sand"},
 	fill_ratio = 0.0025,
 	y_min = 5,
@@ -186,6 +198,14 @@ register_decoration(ethereal.caves, {
 	fill_ratio = 0.005, y_min = 5, y_max = 42,
 	biomes = {"caves"},
 	decoration = {"default:dry_grass_2", "default:dry_grass_3", "default:dry_shrub"}})
+
+-- crystal spike & grass
+
+register_decoration(ethereal.frost, {
+	place_on = {"ethereal:crystal_dirt"},
+	fill_ratio = 0.02, y_min = 1, y_max = 1750,
+	biomes = {"frost", "frost_floatland"},
+	decoration = {"ethereal:crystal_spike", "ethereal:crystalgrass"}})
 
 -- red shrub
 
@@ -226,11 +246,19 @@ register_decoration(1,{
 	y_min = 1,
 	biomes = {
 		"desert",
-		"sandstone",
+		"sandstone_desert",
 	},
 	height_max = 4,
 	decoration = "default:cactus",
 })
+
+-- wild red mushroom
+
+register_decoration(ethereal.mushroom, {
+	place_on = {"ethereal:mushroom_dirt"},
+	fill_ratio = 0.25,
+	biomes = {"mushroom"},
+	decoration = "flowers:mushroom_red"})
 
 -- spore grass
 
@@ -298,7 +326,7 @@ register_decoration(ethereal.junglee, {
 	decoration = "default:junglegrass"})
 
 register_decoration(ethereal.jumble, {
-	place_on = {"default:dirt_with_grass"},
+	place_on = {"default:dirt_with_rainforest_litter"},
 	fill_ratio = 0.1,
 	biomes = {"jumble", "grove"},
 	decoration = "default:junglegrass"})
@@ -311,6 +339,12 @@ register_decoration(ethereal.swamp, {
 
 -- grass
 
+register_decoration(ethereal.grassy, {
+	place_on = {"default:dirt_with_grass"},
+	fill_ratio = 0.35,
+	biomes = {"deciduous_forest"},
+	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
+
 register_decoration(ethereal.grassytwo, {
 	place_on = {"default:dirt_with_grass"},
 	fill_ratio = 0.35,
@@ -321,6 +355,12 @@ register_decoration(ethereal.jumble, {
 	place_on = {"default:dirt_with_grass","default:dirt_with_rainforest_litter"},
 	fill_ratio = 0.35,
 	biomes = {"jumble"},
+	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
+
+register_decoration(ethereal.junglee, {
+	place_on = {"default:dirt_with_rainforest_litter"},
+	fill_ratio = 0.35,
+	biomes = {"rainforest"},
 	decoration = {"default:grass_2", "default:grass_3", "default:grass_4", "default:grass_5"}})
 
 register_decoration(ethereal.grove, {
@@ -556,7 +596,7 @@ if minetest.get_modpath("xanadu") then
 	register_decoration(1, {
 		place_on = {"default:desert_sand", "default:sandstone"},
 		sidelen = 16, fill_ratio = 0.005,
-		biomes = {"desert", "sandstone"},
+		biomes = {"desert", "sandstone_desert"},
 		decoration = {"xanadu:cactus_echinocereus", "xanadu:cactus_matucana",
 				"xanadu:cactus_baseball", "xanadu:cactus_golden"}})
 
@@ -564,7 +604,7 @@ if minetest.get_modpath("xanadu") then
 	register_decoration(1, {
 		place_on = {"default:desert_sand", "default:sandstone", "default:sand"},
 		sidelen = 16, fill_ratio = 0.004,
-		biomes = {"desert", "sandstone"},
+		biomes = {"desert", "sandstone_desert"},
 		decoration = {"xanadu:desert_kangaroo", "xanadu:desert_brittle",
 				"xanadu:desert_ocotillo", "xanadu:desert_whitesage"}})
 

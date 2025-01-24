@@ -590,7 +590,7 @@ decay({"ethereal:mushroom_trunk"}, {"ethereal:mushroom", "ethereal:mushroom_brow
 
 -- falling leaf particles
 
-if minetest.settings:get_bool("ethereal.leaf_particles") ~= false then
+if minetest.settings:get_bool("ethereal.leaf_particles",false) ~= false then
 
 	local leaf_list = {
 		{"ethereal:frost_leaves", "331b37", 9},

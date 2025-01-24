@@ -54,7 +54,7 @@ minetest.register_node("ethereal:stone_with_etherium_ore", {
 
 -- Bamboo Flooring
 
-minetest.register_node("ethereal:bamboo_floor", {
+--[[minetest.register_node("ethereal:bamboo_floor", {
 	description = S("Bamboo Floor"),
 	drawtype = "nodebox",
 	tiles = {"ethereal_bamboo_floor.png"},
@@ -80,7 +80,7 @@ minetest.register_craft({
 		{"ethereal:bamboo", "ethereal:bamboo"},
 		{"ethereal:bamboo", "ethereal:bamboo"}
 	}
-})
+})]]
 
 -- Bamboo Block
 
@@ -231,7 +231,7 @@ local function add_candle(col, dcol)
 		light_source = 11,
 		sunlight_propagates = true,
 		walkable = false,
-		groups = {candle = 1, dig_immediate = 3, attached_node = 1},
+		groups = {candle = 1, candle_ethereal = 1, dig_immediate = 3, attached_node = 1},
 		sounds = default.node_sound_defaults(),
 		selection_box = {
 			type = "fixed", fixed = { -0.15, -0.5, -0.15, 0.15, 0, 0.15 }
@@ -241,7 +241,7 @@ local function add_candle(col, dcol)
 	if dcol ~= "" then
 		minetest.register_craft({
 			output = "ethereal:candle" .. under .. col,
-			recipe = { {"group:candle", "dye:" .. col} }
+			recipe = { {"group:candle_ethereal", "dye:" .. col} }
 		})
 	end
 end
@@ -267,7 +267,7 @@ add_candle("yellow", "Yellow ")
 minetest.register_craft({
 	output = "ethereal:candle",
 	recipe = {
-		{"group:candle", "dye:white"}
+		{"group:candle_ethereal", "dye:white"}
 	}
 })
 

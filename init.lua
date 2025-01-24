@@ -40,7 +40,7 @@ setting("bool", "lilywalk", true)
 setting("bool", "xcraft", true)
 setting("bool", "flight", true)
 setting("number", "glacier", 1)
-setting("number", "bamboo", 0)
+setting("number", "bamboo", 1)
 setting("number", "mesa", 1)
 setting("number", "alpine", 1)--taiga
 setting("number", "snowy", 1)--coniferous_forest
