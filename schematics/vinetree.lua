@@ -1,12 +1,7 @@
 
 local _ = {name = "air", prob = 0}
-<<<<<<< HEAD
 local T = {name = "default:tree", prob = 255}
 local l = {name = "default:leaves", prob = 127}
-=======
-local t = {name = "default:tree", prob = 255}
-local T = {name = "default:tree", prob = 255, force_place = true}
->>>>>>> master
 local L = {name = "default:leaves", prob = 255}
 local u = {name = "ethereal:vine", prob = 255, param2 = 2}
 local U = {name = "ethereal:vine", prob = 255, param2 = 3}
@@ -63,7 +58,7 @@ ethereal.vinetree = {
 	_,_,_,_,_,_,_,
 	_,_,_,_,_,_,U,
 	_,_,_,_,_,_,U,
-	_,L,t,_,t,L,U,
+	_,L,T,_,T,L,U,
 	_,L,L,L,L,L,U,
 	_,L,L,L,L,L,_,
 	_,_,_,L,L,_,_,

@@ -12,7 +12,7 @@ ethereal.mushroomone = {
 	yslice_prob = {
 		{ypos = 3, prob = 127},
 		{ypos = 4, prob = 127},
-		{ypos = 7, prob = 127}
+		{ypos = 7, prob = 220}
 	},
 
 	data = {
