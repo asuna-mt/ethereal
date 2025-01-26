@@ -37,7 +37,7 @@ ethereal.snowy_grassland (Snowy grasslands biome, 1 = Enable / 0 = Disable) int 
 ethereal.sealife (Coral and Seaweed biome, 1 = Enable / 0 = Disable) int 1
 ethereal.reefs (MT5 Coral biome, 1 = Enable / 0 = Disable) int 1
 ethereal.logs (Tree log decor, 1 = Enable / 0 = Disable) int 1
-ethereal.wood_rotate (Enable directional placement of wood) bool true
+ethereal.wood_rotate (Enable directional placement of wood) bool false
 ethereal.leaf_particles (Enable falling leaf particles) bool false
 
 ethereal.flightpotion_duration (Flight Potion Duration) int 300

@@ -68,7 +68,7 @@ setting("number", "snowy_grassland", 1)
 setting("number", "sealife", 1)
 setting("number", "reefs", 1)
 setting("number", "logs", 0)
-setting("bool", "wood_rotate", true)
+setting("bool", "wood_rotate", false)
 
 
 local path = minetest.get_modpath("ethereal")
