@@ -1,7 +1,7 @@
 
 -- ethereal schematic path
 
-local epath = minetest.get_modpath("ethereal") .. "/schematics/"
+local epath = core.get_modpath("ethereal") .. "/schematics/"
 
 -- add schematics
 
@@ -211,7 +211,7 @@ lucky_block:add_blocks({
 	}}
 })
 
-if minetest.get_modpath("3d_armor") then
+if core.get_modpath("3d_armor") then
 
 	lucky_block:add_blocks({
 		{"dro", {"3d_armor:helmet_crystal"}},
@@ -222,7 +222,7 @@ if minetest.get_modpath("3d_armor") then
 	})
 end
 
-if minetest.get_modpath("shields") then
+if core.get_modpath("shields") then
 
 	lucky_block:add_blocks({
 		{"dro", {"shields:shield_crystal"}},

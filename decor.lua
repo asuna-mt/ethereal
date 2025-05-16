@@ -9,7 +9,7 @@ local function register_decoration(enabled, def)
 	def.y_min = def.y_min or 1
 	def.y_max = def.y_max or 31000
 
-	minetest.register_decoration(def)
+	core.register_decoration(def)
 end
 
 -- thin ice
@@ -64,7 +64,7 @@ register_decoration(1, {
 
 -- farming redo check, salt crystal if found, strawberry if not
 
-if minetest.get_modpath("farming") and farming.mod and farming.mod == "redo" then
+if core.get_modpath("farming") and farming.mod and farming.mod == "redo" then
 
 	register_decoration(ethereal.grayness, {
 		place_on = "default:silver_sand",
@@ -421,7 +421,7 @@ register_decoration(ethereal.alpine, {
 
 -- wild onion and setting
 
-local abundant = minetest.settings:get_bool("ethereal.abundant_onions") ~= false
+local abundant = core.settings:get_bool("ethereal.abundant_onions") ~= false
 
 -- wild onion
 
@@ -588,7 +588,7 @@ add_illumishroom(-3000, -2000, "ethereal:illumishroom3")
 
 --= Register Biome Decoration Using Plants Mega Pack Lite if Xanadu found
 
-if minetest.get_modpath("xanadu") then
+if core.get_modpath("xanadu") then
 
 	--= Desert Biome
 

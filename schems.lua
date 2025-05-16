@@ -1,8 +1,8 @@
 
 -- path to default and ethereal schematics
 
-local path = minetest.get_modpath("ethereal") .. "/schematics/"
-local dpath = minetest.get_modpath("default") .. "/schematics/"
+local path = core.get_modpath("ethereal") .. "/schematics/"
+local dpath = core.get_modpath("default") .. "/schematics/"
 
 -- load schematic tables
 
@@ -47,7 +47,7 @@ local function register_decoration(enabled, def)
 	def.flags = def.flags or "place_center_x, place_center_z"
 	def.rotation = def.rotation or "random"
 
-	minetest.register_decoration(def)
+	core.register_decoration(def)
 end
 
 -- Special grass in jumble biome which must be place before schematics
@@ -199,11 +199,11 @@ register_decoration(1, {
 
 -- old biome setting (when enabled old heat/humidity values are used)
 
-local old = minetest.settings:get_bool("ethereal.old_biomes")
+local old = core.settings:get_bool("ethereal.old_biomes")
 
 -- desertstone spike
 
-register_decoration(minetest.get_modpath("stairs") and ethereal.caves, {
+register_decoration(core.get_modpath("stairs") and ethereal.caves, {
 	place_on = "default:desert_stone",
 	sidelen = 16, fill_ratio = 0.01, y_min = 5, y_max = 42,
 	biomes = {"caves"},
@@ -748,7 +748,7 @@ register_decoration(1, {
 
 -- default pine bush
 
-register_decoration((minetest.registered_nodes["default:pine_bush"] and 1), {
+register_decoration((core.registered_nodes["default:pine_bush"] and 1), {
 	name = "default:pine_bush",
 	place_on = {"default:dirt_with_snow", "default:cold_dirt"},
 	sidelen = 16, y_min = 4, y_max = 120,
@@ -760,7 +760,7 @@ register_decoration((minetest.registered_nodes["default:pine_bush"] and 1), {
 
 -- default blueberry bush
 
-register_decoration((minetest.registered_nodes["default:blueberry_bush_leaves"] and 1), {
+register_decoration((core.registered_nodes["default:blueberry_bush_leaves"] and 1), {
 	name = "default:blueberry_bush",
 	deco_type = "schematic",
 	place_on = {
@@ -820,9 +820,9 @@ register_decoration(1, {
 if ethereal.reefs == 1 then
 
 	-- override corals so crystal shovel can pick them up intact
-	minetest.override_item("default:coral_skeleton", {groups = {crumbly = 3}})
-	minetest.override_item("default:coral_orange", {groups = {crumbly = 3}})
-	minetest.override_item("default:coral_brown", {groups = {crumbly = 3}})
+	core.override_item("default:coral_skeleton", {groups = {crumbly = 3}})
+	core.override_item("default:coral_orange", {groups = {crumbly = 3}})
+	core.override_item("default:coral_brown", {groups = {crumbly = 3}})
 
 	--[[register_decoration(1, {
 		deco_type = "schematic",
@@ -924,7 +924,7 @@ end
 
 -- deep see fumerole / vent
 
-register_decoration(minetest.get_modpath("nether") and 1, {
+register_decoration(core.get_modpath("nether") and 1, {
 	name = "nether:fumarole",
 	place_on = {"default:sand"},
 	sidelen = 16, y_min = -192, y_max = -45,
@@ -941,13 +941,13 @@ register_decoration(minetest.get_modpath("nether") and 1, {
 	place_offset_y = -1,
 	spawn_by = {"default:water_source"}, num_spawn_by = 8})
 
-if minetest.get_modpath("nether") then
+if core.get_modpath("nether") then
 
-	minetest.register_lbm({
+	core.register_lbm({
 		name = ":nether:extra_fumarole_timer",
 		nodenames = {"nether:fumarole"},
 		run_at_every_load = false,
 
-		action = function(pos) minetest.get_node_timer(pos):start(10) end
+		action = function(pos) core.get_node_timer(pos):start(10) end
 	})
 end
