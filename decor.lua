@@ -87,6 +87,28 @@ register_decoration(ethereal.glacier, {
 	biomes = {"glacier"},
 	decoration = "ethereal:firethorn"})
 
+-- Special orange baked clay surface decor for mesa
+
+register_decoration(ethereal.mesa,{
+	deco_type = "simple",
+	place_on = {"default:dirt_with_dry_grass"},
+	sidelen = 2,
+	noise_params = {
+		offset = -1,
+		scale = -1.25,
+		spread = {x = 100, y = 100, z = 100},
+		seed = 4,
+		octaves = 4,
+		persist = 1.0
+	},
+	biomes = {"mesa"},
+	y_max = 31000,
+	y_min = 1,
+	decoration = "bakedclay:orange",
+	place_offset_y = -1,
+	flags = "force_placement"
+})
+
 -- dry grass
 
 register_decoration(ethereal.savanna, {
@@ -138,28 +160,6 @@ register_decoration(ethereal.fiery, {
 	biomes = {"fiery"},
 	decoration = "default:lava_source",
 	flags = "force_placement"})
-
--- Special orange baked clay surface decor for mesa
-
-register_decoration(ethereal.mesa,{
-	deco_type = "simple",
-	place_on = {"default:dirt_with_dry_grass"},
-	sidelen = 2,
-	noise_params = {
-		offset = -1,
-		scale = -1.25,
-		spread = {x = 100, y = 100, z = 100},
-		seed = 4,
-		octaves = 4,
-		persist = 1.0
-	},
-	biomes = {"mesa"},
-	y_max = 31000,
-	y_min = 1,
-	decoration = "bakedclay:orange",
-	place_offset_y = -1,
-	flags = "force_placement"
-})
 
 -- dry shrub
 register_decoration(ethereal.plains, {
