@@ -588,6 +588,7 @@ register_decoration(1, {
 		octaves = 1,
 		persist = 1.0
 	}, y_min = 1, y_max = 3,
+	place_offset_y = 1,
 	biomes = {"desert_shore", "naturalbiomes:mediterranean_shore", "sandstone_desert_shore",
 			"grove_shore"},
 	schematic = ethereal.palmtree})
