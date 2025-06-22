@@ -779,18 +779,18 @@ register_decoration((core.registered_nodes["default:blueberry_bush_leaves"] and 
 -- place waterlily in beach areas
 
 local sandy_biomes = {}
-local desert_biomes = {
-	desert = true,
-	sandstone_desert = true,
+local hot_biomes = {
 	desert_shore = true,
 	sandstone_desert_shore = true,
-	desert_below = true,
-	sandstone_desert_below = true,
+	["naturalbiomes:mediterranean_shore"] = true,
+	["naturalbiomes:outback_shore"] = true,
+	["fiery_shore"] = true,
+	savanna = true,
 }
 for biome,def in pairs(asuna.biomes) do
 	if def.shore == "default:sand" and
-		(def.ocean == "temperate" or def.ocean == "tropical") and
-		not desert_biomes[biome]
+		(def.ocean == "temperate") and
+		not hot_biomes[biome]
 	then
 		table.insert(sandy_biomes,biome)
 	end
@@ -798,17 +798,44 @@ end
 
 register_decoration(1, {
 	deco_type = "schematic",
-	place_on = {"default:sand"},
+	place_on = {
+		"default:sand",
+		"default:clay",
+		"default:dirt",
+	},
 	sidelen = 16,
 	noise_params = {
-		offset = -0.12,
-		scale = 0.3,
-		spread = {x = 200, y = 200, z = 200},
+		offset = -0.0475,
+		scale = 0.0875,
+		spread = {x = 100, y = 100, z = 100},
 		seed = 33,
-		octaves = 3,
-		persist = 0.7
+		octaves = 2,
+		persistence = 0.6,
 	},
 	biomes = sandy_biomes,
+	y_min = 0,
+	y_max = 0,
+	schematic = ethereal.waterlily,
+	rotation = "random"
+})
+
+-- extra waterlily in swamps
+
+register_decoration(1, {
+	deco_type = "schematic",
+	place_on = {
+		"default:sand",
+		"default:clay",
+		"default:dirt",
+	},
+	sidelen = 80,
+	fill_ratio = 0.0275,
+	biomes = {
+		"swamp_shore",
+		"marsh_shore",
+		"naturalbiomes:alderswamp_shore",
+		"jumble_shore",
+	},
 	y_min = 0,
 	y_max = 0,
 	schematic = ethereal.waterlily,
