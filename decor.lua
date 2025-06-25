@@ -264,7 +264,15 @@ register_decoration(ethereal.mushroom, {
 
 register_decoration(ethereal.mushroom, {
 	place_on = {"default:clay"},
-	fill_ratio = 0.1, y_min = 1, y_max = 5,
+	sidelen = 16,
+	noise_params = {
+		offset = -0.0125,
+		scale = 0.0325,
+		spread = {x = 80, y = 20, z = 80},
+		seed = 357,
+		octaves = 2,
+		persistence = 0.6,
+	}, y_min = 1, y_max = 5,
 	biomes = {"mushroom_shore"},
 	decoration = "ethereal:slime_mold"})
 
