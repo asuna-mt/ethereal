@@ -74,6 +74,8 @@ core.register_craft({
 
 -- willow
 
+tmp = "ethereal:willow_trunk"
+
 core.register_node("ethereal:willow_trunk", {
 	description = S("Weeping Willow Trunk"),
 	tiles = {
