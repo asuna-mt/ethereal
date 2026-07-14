@@ -74,7 +74,9 @@ core.register_craft({
 
 -- willow
 
-core.register_node("ethereal:willow_trunk", {
+tmp = "ethereal:willow_trunk"
+
+core.register_node(tmp, {
 	description = S("Weeping Willow Trunk"),
 	tiles = {
 		"ethereal_willow_trunk_top.png",
@@ -282,7 +284,7 @@ core.register_craft({
 
 -- banana
 
-local tmp = "ethereal:banana_trunk"
+tmp = "ethereal:banana_trunk"
 
 core.register_node(tmp, {
 	description = S("Banana Trunk"),
